@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
@@ -5,6 +6,7 @@ import { useTheme } from '../hooks/useTheme';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
 import { STATUS_STYLES, QUERY_KEYS, ROUTES } from '../lib/constants';
+import TopUpModal from '../components/TopUpModal';
 import type { Reservation } from '../types';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -43,8 +45,11 @@ export default function Dashboard() {
   const { user } = useAuthStore();
   const { light, card, border, text1, text2, skelBg, hover, accent, accentBg } = useTheme();
 
+  const [showTopUp, setShowTopUp] = useState(false);
+
   const isPrestador = user?.tipo_usuario === 'prestador';
   const firstName = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
+
 
   const { data: services = [], isLoading: loadingServices } = useQuery({
     queryKey: QUERY_KEYS.SERVICES,
@@ -114,6 +119,8 @@ export default function Dashboard() {
     <div className="min-h-screen transition-colors duration-300">
       <div className="w-full px-4 sm:px-6 py-8 space-y-8">
 
+        {showTopUp && <TopUpModal onClose={() => setShowTopUp(false)} />}
+
         {/* ── Hero header ─────────────────────────────────────────────────── */}
         <div className="rounded-2xl px-4 sm:px-6 py-5 sm:py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5"
           style={{ background: card, border: `1px solid ${border}` }}>
@@ -138,10 +145,24 @@ export default function Dashboard() {
             <p className="text-3xl font-extrabold tracking-tight" style={{ color: accent }}>
               Kz {(user?.saldo ?? 0).toFixed(2)}
             </p>
-            <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide"
-              style={{ background: accentBg, color: accent, border: `1px solid ${accent}33` }}>
-              {user?.tipo_usuario}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide"
+                style={{ background: accentBg, color: accent, border: `1px solid ${accent}33` }}>
+                {user?.tipo_usuario}
+              </span>
+              {!isPrestador && (
+                <button
+                  onClick={() => setShowTopUp(true)}
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
+                  style={{ background: accent, color: '#fff' }}
+                >
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
+                  Carregar
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
