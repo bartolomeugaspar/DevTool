@@ -83,16 +83,11 @@ export default function Navbar() {
           <div className="hidden md:flex items-center" ref={profileRef}>
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl transition-all hover:bg-white/5"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all hover:bg-white/5"
             >
               {/* Avatar */}
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
                 {initials}
-              </div>
-              {/* Name + role */}
-              <div className="flex flex-col leading-tight text-left">
-                <span className="text-sm font-semibold text-white">{user?.nome_completo?.split(' ')[0] ?? 'Utilizador'}</span>
-                <span className="text-xs font-medium" style={{ color: '#31ECC6' }}>{user?.tipo_usuario}</span>
               </div>
               {/* Chevron */}
               <svg
