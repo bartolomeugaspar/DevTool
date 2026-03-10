@@ -64,7 +64,7 @@ function ToastItem({ message, type = 'success', duration = 3500, onClose }: Toas
         background: '#0e1e35',
         border: '1px solid #1a3557',
         boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
-        transform: visible ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.97)',
+        transform: visible ? 'translateY(0) scale(1)' : 'translateY(-24px) scale(0.97)',
         opacity: visible ? 1 : 0,
         transition: 'transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease',
         minWidth: '280px',
@@ -141,7 +141,7 @@ export function ToastProvider() {
   const remove = (id: number) => notify(_toasts.filter(t => t.id !== id));
 
   return createPortal(
-    <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-2.5 items-end pointer-events-none">
+    <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5 items-end pointer-events-none">
       {toasts.map(t => (
         <div key={t.id} className="pointer-events-auto">
           <ToastItem
