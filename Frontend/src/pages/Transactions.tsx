@@ -62,7 +62,7 @@ export default function Transactions() {
                   </td>
                   <td className="px-6 py-4 text-indigo-400">
                     {res.services?.preco != null
-                      ? `€${res.services.preco.toFixed(2)}`
+                      ? `Kz ${res.services.preco.toFixed(2)}`
                       : '—'}
                   </td>
                   <td className="px-6 py-4">

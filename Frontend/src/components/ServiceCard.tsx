@@ -17,7 +17,7 @@ export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
       <div className="flex items-start justify-between">
         <h3 className="text-lg font-semibold text-white">{service.nome}</h3>
         <span className="text-indigo-400 font-bold text-lg">
-          €{service.preco.toFixed(2)}
+          Kz {service.preco.toFixed(2)}
         </span>
       </div>
 

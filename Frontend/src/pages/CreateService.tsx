@@ -75,7 +75,7 @@ export default function CreateService() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Preço (€)</label>
+          <label className="block text-sm text-gray-400 mb-1">Preço (Kz )</label>
           <input
             {...register('preco')}
             type="number"

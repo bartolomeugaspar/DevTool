@@ -67,7 +67,7 @@ export default function HireService() {
         <h2 className="text-2xl font-bold text-white mb-2">Contratação confirmada</h2>
         <p className="text-gray-400 text-sm mb-8 max-w-xs">
           O serviço <span className="text-white font-medium">{service.nome}</span> foi contratado.
-          O valor de <span className="text-white font-medium">€{service.preco.toFixed(2)}</span> foi
+          O valor de <span className="text-white font-medium">Kz {service.preco.toFixed(2)}</span> foi
           debitado do seu saldo.
         </p>
 
@@ -80,7 +80,7 @@ export default function HireService() {
           <div className="border-t border-gray-800" />
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Valor pago</span>
-            <span className="font-semibold" style={{ color: '#31ECC6' }}>€{service.preco.toFixed(2)}</span>
+            <span className="font-semibold" style={{ color: '#31ECC6' }}>Kz {service.preco.toFixed(2)}</span>
           </div>
           <div className="border-t border-gray-800" />
           <div className="flex justify-between text-sm">
@@ -123,7 +123,7 @@ export default function HireService() {
           <div className="bg-gray-800 rounded-lg p-4 flex items-center justify-between">
             <span className="text-gray-400 text-sm">Valor a debitar</span>
             <span className="text-2xl font-bold text-indigo-400">
-              €{service.preco.toFixed(2)}
+              Kz {service.preco.toFixed(2)}
             </span>
           </div>
         </div>
