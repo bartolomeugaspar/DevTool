@@ -7,7 +7,7 @@ import { toast } from '../components/Toast';
 import type { RegisterPayload } from '../types';
 
 const loginSchema = z.object({
-    email: z.string().email('Email inválido'),
+    identifier: z.string().min(1, 'Email ou NIF obrigatório'),
     senha: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
 });
 
@@ -132,7 +132,12 @@ export default function Login() {
     const handleLogin = async (data: LoginForm) => {
         setServerError('');
         try {
-            await login(data);
+            // Detect if identifier is email or NIF (9 digits)
+            const isNif = /^\d{9}$/.test(data.identifier.trim());
+            const payload = isNif
+                ? { nif: data.identifier.trim(), senha: data.senha }
+                : { email: data.identifier.trim(), senha: data.senha };
+            await login(payload);
         } catch (err: unknown) {
             const error = err as { response?: { data?: { error?: string } } };
             const msg = error.response?.data?.error || 'Erro ao fazer login';
@@ -251,23 +256,26 @@ export default function Login() {
                     {!isRegister ? (
                         <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-5">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Email</label>
+                                <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Email ou NIF</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: loginForm.formState.errors.email ? '#f87171' : '#8e9bab' }}>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: loginForm.formState.errors.identifier ? '#f87171' : '#8e9bab' }}>
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                     </span>
                                     <input
-                                        {...loginForm.register('email')}
-                                        type="email"
-                                        placeholder="exemplo@email.com"
+                                        {...loginForm.register('identifier')}
+                                        type="text"
+                                        placeholder="exemplo@email.com ou 123456789"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
                                         style={inputStyle}
                                         onFocus={onFocus}
                                         onBlur={onBlur}
-                                    autoComplete='no'/>
+                                        autoComplete='off'/>
                                 </div>
+                                {loginForm.formState.errors.identifier && (
+                                    <p className="text-red-400 text-xs mt-1">{loginForm.formState.errors.identifier.message}</p>
+                                )}
                             </div>
 
                             <div>
@@ -286,8 +294,11 @@ export default function Login() {
                                         style={inputStyle}
                                         onFocus={onFocus}
                                         onBlur={onBlur}
-                                    autoComplete='no'/>
+                                    autoComplete='off'/>
                                 </div>
+                                {loginForm.formState.errors.senha && (
+                                    <p className="text-red-400 text-xs mt-1">{loginForm.formState.errors.senha.message}</p>
+                                )}
                             </div>
 
                             <button
