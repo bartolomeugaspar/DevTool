@@ -156,6 +156,40 @@ async function cancelReservation(req, res) {
   res.json({ message: 'Reserva cancelada com sucesso', reserva: data });
 }
 
+async function completeReservation(req, res) {
+  const { id } = req.params;
+
+  const { data: reserva, error: reservaError } = await supabase
+    .from('reservations')
+    .select('*, services(*)')
+    .eq('id', id)
+    .single();
+
+  if (reservaError || !reserva) {
+    return res.status(404).json({ error: 'Reserva não encontrada' });
+  }
+
+  // Só o prestador dono do serviço pode marcar como concluído
+  if (reserva.services?.prestador_id !== req.user.id) {
+    return res.status(403).json({ error: 'Sem permissão para concluir esta reserva' });
+  }
+
+  if (reserva.status !== 'pendente') {
+    return res.status(400).json({ error: 'Só reservas pendentes podem ser concluídas' });
+  }
+
+  const { data, error: updateError } = await supabase
+    .from('reservations')
+    .update({ status: 'concluido' })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (updateError) return res.status(500).json({ error: 'Erro ao concluir reserva' });
+
+  res.json(data);
+}
+
 async function history(req, res) {
   const { tipo, id } = req.user;
 
@@ -188,4 +222,4 @@ async function history(req, res) {
   res.json(data);
 }
 
-module.exports = { createReservation, cancelReservation, history };
+module.exports = { createReservation, cancelReservation, completeReservation, history };
