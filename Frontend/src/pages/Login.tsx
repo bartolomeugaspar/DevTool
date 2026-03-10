@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
+import { toast } from '../components/Toast';
 import type { RegisterPayload } from '../types';
 
 const loginSchema = z.object({
@@ -118,13 +119,25 @@ export default function Login() {
     const loginForm = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
     const registerForm = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
 
+    const inputStyle = { background: '#0c2340', border: '1px solid #304259' };
+    const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+        e.currentTarget.style.borderColor = '#31ECC6';
+        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)';
+    };
+    const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+        e.currentTarget.style.borderColor = '#304259';
+        e.currentTarget.style.boxShadow = 'none';
+    };
+
     const handleLogin = async (data: LoginForm) => {
         setServerError('');
         try {
             await login(data);
         } catch (err: unknown) {
             const error = err as { response?: { data?: { error?: string } } };
-            setServerError(error.response?.data?.error || 'Erro ao fazer login');
+            const msg = error.response?.data?.error || 'Erro ao fazer login';
+            setServerError(msg);
+            toast.error(msg);
         }
     };
 
@@ -135,7 +148,9 @@ export default function Login() {
             setIsRegister(false);
         } catch (err: unknown) {
             const error = err as { response?: { data?: { message?: string } } };
-            setServerError(error.response?.data?.message || 'Erro ao registar');
+            const msg = error.response?.data?.message || 'Erro ao registar';
+            setServerError(msg);
+            toast.error(msg);
         }
     };
 
@@ -233,21 +248,12 @@ export default function Login() {
                         </p>
                     </div>
 
-                    {serverError && (
-                        <div className="mb-5 flex items-center gap-3 border border-red-800/60 bg-red-900/20 text-red-400 px-4 py-3 rounded-xl text-sm font-medium">
-                            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            {serverError}
-                        </div>
-                    )}
-
                     {!isRegister ? (
                         <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-5">
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Email</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: '#8e9bab' }}>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: loginForm.formState.errors.email ? '#f87171' : '#8e9bab' }}>
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
@@ -257,14 +263,11 @@ export default function Login() {
                                         type="email"
                                         placeholder="exemplo@email.com"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
-                                    />
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
+                                    autoComplete='no'/>
                                 </div>
-                                {loginForm.formState.errors.email && (
-                                    <p className="text-red-400 text-xs mt-1.5 font-medium">{loginForm.formState.errors.email.message}</p>
-                                )}
                             </div>
 
                             <div>
@@ -280,14 +283,11 @@ export default function Login() {
                                         type="password"
                                         placeholder="••••••••••"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
-                                    />
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
+                                    autoComplete='no'/>
                                 </div>
-                                {loginForm.formState.errors.senha && (
-                                    <p className="text-red-400 text-xs mt-1.5 font-medium">{loginForm.formState.errors.senha.message}</p>
-                                )}
                             </div>
 
                             <button
@@ -315,14 +315,11 @@ export default function Login() {
                                         {...registerForm.register('nome_completo')}
                                         placeholder="João Silva"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
                                     />
                                 </div>
-                                {registerForm.formState.errors.nome_completo && (
-                                    <p className="text-red-400 text-xs mt-1.5 font-medium">{registerForm.formState.errors.nome_completo.message}</p>
-                                )}
                             </div>
 
                             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
@@ -332,13 +329,10 @@ export default function Login() {
                                         {...registerForm.register('nif')}
                                         placeholder="123456789"
                                         className="w-full px-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
                                     />
-                                    {registerForm.formState.errors.nif && (
-                                        <p className="text-red-400 text-xs mt-1.5 font-medium">{registerForm.formState.errors.nif.message}</p>
-                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Tipo</label>
@@ -346,9 +340,9 @@ export default function Login() {
                                         <select
                                             {...registerForm.register('tipo_usuario')}
                                             className="w-full px-4 py-3 pr-9 rounded-xl text-sm font-medium text-white outline-none transition-all appearance-none"
-                                            style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                            onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                            onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                            style={inputStyle}
+                                            onFocus={onFocus}
+                                            onBlur={onBlur}
                                         >
                                             <option value="cliente" style={{ background: '#0c2340' }}>Cliente</option>
                                             <option value="prestador" style={{ background: '#0c2340' }}>Prestador</option>
@@ -375,14 +369,11 @@ export default function Login() {
                                         type="email"
                                         placeholder="exemplo@email.com"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
                                     />
                                 </div>
-                                {registerForm.formState.errors.email && (
-                                    <p className="text-red-400 text-xs mt-1.5 font-medium">{registerForm.formState.errors.email.message}</p>
-                                )}
                             </div>
 
                             <div>
@@ -398,14 +389,11 @@ export default function Login() {
                                         type="password"
                                         placeholder="••••••••••"
                                         className="w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium text-white placeholder-[#586779] outline-none transition-all"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                        style={inputStyle}
+                                        onFocus={onFocus}
+                                        onBlur={onBlur}
                                     />
                                 </div>
-                                {registerForm.formState.errors.senha && (
-                                    <p className="text-red-400 text-xs mt-1.5 font-medium">{registerForm.formState.errors.senha.message}</p>
-                                )}
                             </div>
 
                             <button
