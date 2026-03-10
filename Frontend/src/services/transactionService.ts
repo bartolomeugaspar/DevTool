@@ -15,4 +15,9 @@ export const transactionService = {
   async cancel(id: string): Promise<void> {
     await api.delete(`/reservations/${id}`);
   },
+
+  async complete(id: string): Promise<Reservation> {
+    const { data } = await api.patch<Reservation>(`/reservations/${id}/complete`);
+    return data;
+  },
 };

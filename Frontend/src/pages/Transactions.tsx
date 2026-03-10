@@ -59,6 +59,15 @@ export default function Transactions() {
     onError: () => toast.error('Erro ao cancelar reserva'),
   });
 
+  const completeMutation = useMutation({
+    mutationFn: transactionService.complete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.RESERVATIONS });
+      toast.success('Reserva marcada como concluída!');
+    },
+    onError: () => toast.error('Erro ao concluir reserva'),
+  });
+
   const filtered = useMemo(() => {
     if (statusFilter === 'todos') return reservations;
     return reservations.filter(r => r.status === statusFilter);
@@ -73,7 +82,7 @@ export default function Transactions() {
     return { total, pending, done, cancelled, count: reservations.length };
   }, [reservations]);
 
-  const cols = isPrestador ? 5 : 6;
+  const cols = 6;
 
   return (
     <>
@@ -147,7 +156,7 @@ export default function Transactions() {
             <table className="w-full text-sm min-w-[640px]">
               <thead style={{ background: thead }}>
                 <tr>
-                  {['Serviço','Preço', isPrestador ? 'Cliente' : 'Prestador','Status','Data', ...(!isPrestador ? ['Ação'] : [])].map(h => (
+                  {['Serviço','Preço', isPrestador ? 'Cliente' : 'Prestador','Status','Data','Ação'].map(h => (
                     <th key={h} className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: text2 }}>{h}</th>
                   ))}
                 </tr>
@@ -194,7 +203,7 @@ export default function Transactions() {
                   isPrestador ? 'Cliente' : 'Prestador',
                   'Status',
                   'Data',
-                  ...(!isPrestador ? ['Ação'] : []),
+                  'Ação',
                 ].map(h => (
                   <th key={h} className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: text2 }}>{h}</th>
                 ))}
@@ -232,9 +241,22 @@ export default function Transactions() {
                     <td className="px-6 py-4" style={{ color: text2 }}>
                       {new Date(res.created_at).toLocaleDateString('pt-PT')}
                     </td>
-                    {!isPrestador && (
-                      <td className="px-6 py-4">
-                        {res.status === 'pendente' && (
+                    <td className="px-6 py-4">
+                      {isPrestador ? (
+                        res.status === 'pendente' && (
+                          <button
+                            onClick={() => completeMutation.mutate(res.id)}
+                            disabled={completeMutation.isPending}
+                            className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all disabled:opacity-50"
+                            style={{ background: 'rgba(49,236,198,0.10)', color: '#31ECC6' }}
+                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(49,236,198,0.20)')}
+                            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(49,236,198,0.10)')}
+                          >
+                            Concluir
+                          </button>
+                        )
+                      ) : (
+                        res.status === 'pendente' && (
                           <button
                             onClick={() => setCancelTarget(res)}
                             className="text-xs font-medium px-3 py-1.5 rounded-lg transition-all"
@@ -244,9 +266,9 @@ export default function Transactions() {
                           >
                             Cancelar
                           </button>
-                        )}
-                      </td>
-                    )}
+                        )
+                      )}
+                    </td>
                   </tr>
                 );
               })}
