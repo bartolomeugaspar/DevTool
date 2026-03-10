@@ -36,40 +36,50 @@ const FEATURES = [
   },
 ];
 
+const STAGGER_MS = 700;   // gap between each pill appearing
+const HOLD_MS    = 2000;  // how long all pills stay visible before reset
+
 function FeaturePills() {
-  // visibleSet: set of pill indices currently in "visible" state
   const [visibleSet, setVisibleSet] = useState<Set<number>>(new Set());
-  const cycleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     let cancelled = false;
 
+    function clearAll() {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    }
+
     function runCycle() {
       if (cancelled) return;
+      clearAll();
 
-      // Step 1: slide all out (reset)
+      // Reset — slide all out
       setVisibleSet(new Set());
 
-      // Step 2: slide each pill in with stagger
+      // Slide each pill in one by one
       FEATURES.forEach((_, i) => {
-        cycleRef.current = setTimeout(() => {
+        const t = setTimeout(() => {
           if (cancelled) return;
           setVisibleSet(prev => new Set([...prev, i]));
-        }, 400 + i * 200); // first pill at 400ms, each +200ms
+        }, 300 + i * STAGGER_MS);
+        timersRef.current.push(t);
       });
 
-      // Step 3: hold visible for 2 s after last pill appeared, then repeat
-      const holdDelay = 400 + (FEATURES.length - 1) * 200 + 2000;
-      cycleRef.current = setTimeout(() => {
+      // After last pill + hold time, restart the cycle
+      const totalIn  = 300 + (FEATURES.length - 1) * STAGGER_MS + 500; // +500 for slide-in duration
+      const t = setTimeout(() => {
         if (!cancelled) runCycle();
-      }, holdDelay);
+      }, totalIn + HOLD_MS);
+      timersRef.current.push(t);
     }
 
     runCycle();
 
     return () => {
       cancelled = true;
-      if (cycleRef.current) clearTimeout(cycleRef.current);
+      clearAll();
     };
   }, []);
 
