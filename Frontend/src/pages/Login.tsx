@@ -219,7 +219,7 @@ export default function Login() {
                     </div>
 
                     {/* Header */}
-                    <div className="mb-8">
+                    <div className="mb-8 text-center lg:text-left">
                         <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#31ECC6' }}>
                             {isRegister ? 'Novo utilizador' : 'Bem-vindo de volta'}
                         </p>
