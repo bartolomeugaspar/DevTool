@@ -55,19 +55,57 @@ export default function HireService() {
 
   if (success) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-10 text-center">
-        <div className="bg-green-900/30 border border-green-700 rounded-xl p-10">
-          <div className="text-5xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold text-green-300 mb-2">Serviço Contratado!</h2>
-          <p className="text-gray-400 mb-6">
-            O serviço <strong>{service.nome}</strong> foi contratado com sucesso por{' '}
-            <strong>€{service.preco.toFixed(2)}</strong>.
-          </p>
+      <div className="max-w-lg mx-auto px-6 py-20 flex flex-col items-center text-center">
+        {/* Icon */}
+        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(49,236,198,0.12)' }}>
+          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#31ECC6" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+        </div>
+
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-white mb-2">Contratação confirmada</h2>
+        <p className="text-gray-400 text-sm mb-8 max-w-xs">
+          O serviço <span className="text-white font-medium">{service.nome}</span> foi contratado.
+          O valor de <span className="text-white font-medium">€{service.preco.toFixed(2)}</span> foi
+          debitado do seu saldo.
+        </p>
+
+        {/* Summary card */}
+        <div className="w-full bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8 text-left space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-500">Serviço</span>
+            <span className="text-white font-medium">{service.nome}</span>
+          </div>
+          <div className="border-t border-gray-800" />
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-500">Valor pago</span>
+            <span className="font-semibold" style={{ color: '#31ECC6' }}>€{service.preco.toFixed(2)}</span>
+          </div>
+          <div className="border-t border-gray-800" />
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-500">Estado</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: 'rgba(49,236,198,0.12)', color: '#31ECC6' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
+              Concluído
+            </span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 w-full">
+          <button
+            onClick={() => navigate('/services')}
+            className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 rounded-lg transition-colors text-sm"
+          >
+            Explorar serviços
+          </button>
           <button
             onClick={() => navigate('/transactions')}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-lg transition-colors"
+            className="flex-1 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"
+            style={{ background: 'linear-gradient(135deg, #31ECC6 0%, #1ab89e 100%)' }}
           >
-            Ver Transações
+            Ver transações
           </button>
         </div>
       </div>
