@@ -57,10 +57,17 @@ export default function Transactions() {
       ) : (
         <div className="rounded-2xl overflow-hidden" style={{ background: card, border: `1px solid ${border}` }}>
           <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[520px]">
+          <table className="w-full text-sm min-w-[640px]">
             <thead style={{ background: thead }}>
               <tr>
-                {['Serviço', 'Preço', 'Status', 'Data', ...(user?.tipo_usuario === 'cliente' ? ['Ação'] : [])].map(h => (
+                {[
+                  'Serviço',
+                  'Preço',
+                  user?.tipo_usuario === 'prestador' ? 'Cliente' : 'Prestador',
+                  'Status',
+                  'Data',
+                  ...(user?.tipo_usuario === 'cliente' ? ['Ação'] : []),
+                ].map(h => (
                   <th key={h} className="text-left px-6 py-3 text-xs font-semibold uppercase tracking-wider" style={{ color: text2 }}>{h}</th>
                 ))}
               </tr>
@@ -81,6 +88,11 @@ export default function Transactions() {
                       {res.services?.preco != null
                         ? `Kz ${res.services.preco.toFixed(2)}`
                         : '—'}
+                    </td>
+                    <td className="px-6 py-4" style={{ color: text2 }}>
+                      {user?.tipo_usuario === 'prestador'
+                        ? (res.users?.nome_completo ?? res.users?.email ?? '—')
+                        : (res.services?.prestador_id ? '—' : '—')}
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
