@@ -18,6 +18,7 @@ export const ROUTES = {
   DASHBOARD:       '/dashboard',
   SERVICES:        '/services',
   SERVICE_CREATE:  '/services/create',
+  SERVICE_EDIT:    (id: string) => `/services/${id}/edit`,
   SERVICE_HIRE:    (id: string) => `/services/${id}/hire`,
   TRANSACTIONS:    '/transactions',
 } as const;

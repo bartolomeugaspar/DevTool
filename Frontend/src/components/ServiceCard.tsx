@@ -51,6 +51,17 @@ export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
             Contratar
           </Link>
         )}
+        {isOwner && (
+          <Link
+            to={ROUTES.SERVICE_EDIT(service.id)}
+            className="flex-1 text-center text-sm font-semibold py-2 rounded-xl transition-all"
+            style={{ background: accentBg, color: accent }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          >
+            Editar
+          </Link>
+        )}
         {isOwner && onDelete && (
           <button
             onClick={() => onDelete(service.id)}

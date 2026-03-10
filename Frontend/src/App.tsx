@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Services from './pages/Services';
 import CreateService from './pages/CreateService';
+import EditService from './pages/EditService';
 import Transactions from './pages/Transactions';
 import HireService from './pages/HireService';
 import NotFound from './pages/NotFound';
@@ -55,6 +56,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['prestador']}>
             <Layout><CreateService /></Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/services/:id/edit"
+        element={
+          <ProtectedRoute allowedRoles={['prestador']}>
+            <Layout><EditService /></Layout>
           </ProtectedRoute>
         }
       />
