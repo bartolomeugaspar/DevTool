@@ -62,4 +62,16 @@ async function createReservation(req, res) {
   res.status(201).json(data);
 }
 
-module.exports = { createReservation };
+async function history(req, res) {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*, services(*)')
+    .eq('cliente_id', req.user.id)
+    .order('created_at', { ascending: false });
+
+  if (error) return res.status(400).json(error);
+
+  res.json(data);
+}
+
+module.exports = { createReservation, history };
