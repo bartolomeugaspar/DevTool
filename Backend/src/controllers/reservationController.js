@@ -195,7 +195,7 @@ async function history(req, res) {
 
   let query = supabase
     .from('reservations')
-    .select('*, services(*), users:cliente_id(id, nome_completo, email, nif)');
+    .select('*, services(*, users:prestador_id(id, nome_completo, email)), users:cliente_id(id, nome_completo, email, nif)');
 
   if (tipo === 'prestador') {
     // Get reservations where the service belongs to this provider
