@@ -16,4 +16,18 @@ function auth(req, res, next) {
   }
 }
 
-module.exports = { auth };
+function isCliente(req, res, next) {
+  if (req.user?.tipo !== 'cliente') {
+    return res.status(403).json({ error: 'Apenas clientes podem realizar esta ação' });
+  }
+  next();
+}
+
+function isPrestador(req, res, next) {
+  if (req.user?.tipo !== 'prestador') {
+    return res.status(403).json({ error: 'Apenas prestadores podem realizar esta ação' });
+  }
+  next();
+}
+
+module.exports = { auth, isCliente, isPrestador };
