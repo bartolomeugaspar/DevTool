@@ -80,7 +80,7 @@ export default function Dashboard() {
   const text2    = light ? '#586779'              : '#586779';
   const skelBg   = light ? '#e5e7eb'              : '#1a3557';
   const hover    = light ? '#f3f4f6'              : 'rgba(255,255,255,0.03)';
-  const accent   = light ? '#0052aaff'              : '#31ECC6';
+  const accent   = light ? '#007aff'              : '#31ECC6';
   const accentBg = light ? 'rgba(0,122,255,0.10)' : 'rgba(49,236,198,0.10)';
 
   const Skel = ({ w = '6rem', h = '1.75rem' }: { w?: string; h?: string }) => (

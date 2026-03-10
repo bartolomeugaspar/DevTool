@@ -25,13 +25,13 @@ export default function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
 
   // ── theme tokens ────────────────────────────────────────────────────────
-  const navBg     = light ? '#ffffff'              : '#0052aaff';
-  const navBorder = light ? '#e5e7eb'              : '#0052aaff';
+  const navBg     = light ? '#ffffff'              : '#0c2340';
+  const navBorder = light ? '#e5e7eb'              : '#1a3557';
   const dropBg    = light ? '#ffffff'              : '#0e1e35';
   const text1     = light ? '#0c2340'              : '#ffffff';
   const text2     = light ? '#586779'              : '#8e9bab';
   const hoverBg   = light ? '#f3f4f6'              : 'rgba(255,255,255,0.05)';
-  const accent    = light ? '#0052aaff'              : '#31ECC6';
+  const accent    = light ? '#007aff'              : '#31ECC6';
   const accentBg  = light ? 'rgba(0,122,255,0.10)' : 'rgba(49,236,198,0.18)';
 
   useEffect(() => {

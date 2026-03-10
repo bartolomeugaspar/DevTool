@@ -27,7 +27,7 @@ function Layout({ children }: { children: React.ReactNode }) {
   const light = theme === 'light';
   return (
     <div className="min-h-screen transition-colors duration-300"
-      style={{ background: light ? '#f3f4f6f6' : '#042f5cff' }}>
+      style={{ background: light ? '#f3f4f6' : '#07111e' }}>
       <Navbar />
       <main>{children}</main>
     </div>
