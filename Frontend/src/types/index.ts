@@ -15,6 +15,7 @@ export interface Service {
   preco: number;
   prestador_id: string;
   created_at: string;
+  users?: Pick<User, 'id' | 'nome_completo' | 'email'>;
 }
 
 export interface Reservation {
