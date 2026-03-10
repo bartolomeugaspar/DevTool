@@ -10,7 +10,7 @@ export default function Services() {
 
   const text1  = light ? '#0c2340' : '#ffffff';
   const text2  = light ? '#586779' : '#8e9bab';
-  const accent = light ? '#007aff' : '#31ECC6';
+  const accent = light ? '#0055cc' : '#31ECC6';
 
   const { data: services = [], isLoading, isError } = useQuery({
     queryKey: ['services'],

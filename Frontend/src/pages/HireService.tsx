@@ -21,8 +21,8 @@ export default function HireService() {
   const border  = light ? '#e5e7eb'              : '#1a3557';
   const text1   = light ? '#0c2340'              : '#ffffff';
   const text2   = light ? '#586779'              : '#8e9bab';
-  const accent  = light ? '#007aff'              : '#31ECC6';
-  const accentBg = light ? 'rgba(0,122,255,0.10)' : 'rgba(49,236,198,0.12)';
+  const accent  = light ? '#0055cc'              : '#31ECC6';
+  const accentBg = light ? 'rgba(0,85,204,0.10)' : 'rgba(49,236,198,0.12)';
   const btnSecBg = light ? '#f3f4f6'             : '#1a3557';
   const btnSecText = light ? '#0c2340'           : '#8e9bab';
 

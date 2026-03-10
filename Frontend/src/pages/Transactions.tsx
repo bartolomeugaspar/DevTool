@@ -20,7 +20,7 @@ export default function Transactions() {
   const thead  = light ? '#f3f4f6' : '#0c2340';
   const text1  = light ? '#0c2340' : '#ffffff';
   const text2  = light ? '#586779' : '#8e9bab';
-  const accent = light ? '#007aff' : '#31ECC6';
+  const accent = light ? '#0055cc' : '#31ECC6';
   const rowHover = light ? '#f9fafb' : 'rgba(255,255,255,0.03)';
 
   const { data: reservations = [], isLoading } = useQuery({

@@ -22,9 +22,9 @@ export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
   const text1    = light ? '#0c2340'               : '#ffffff';
   const text2    = light ? '#586779'               : '#8e9bab';
   const text3    = light ? '#94a3b8'               : '#304259';
-  const accent   = light ? '#007aff'               : '#31ECC6';
-  const accentBg = light ? 'rgba(0,122,255,0.08)'  : 'rgba(49,236,198,0.08)';
-  const hoverBorder = light ? '#007aff66'          : '#31ECC666';
+  const accent   = light ? '#0055cc'               : '#31ECC6';
+  const accentBg = light ? 'rgba(0,85,204,0.08)'  : 'rgba(49,236,198,0.08)';
+  const hoverBorder = light ? '#0055cc66'          : '#31ECC666';
 
   return (
     <div

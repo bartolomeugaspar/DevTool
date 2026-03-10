@@ -28,8 +28,8 @@ export default function CreateService() {
   const text2     = light ? '#586779'                 : '#8e9bab';
   const inputBg   = light ? '#f9fafb'                 : '#0c2340';
   const inputBorder = light ? '#e5e7eb'               : '#1a3557';
-  const inputFocusBorder = light ? '#007aff'          : '#31ECC6';
-  const accent    = light ? '#007aff'                 : '#31ECC6';
+  const inputFocusBorder = light ? '#0055cc'          : '#31ECC6';
+  const accent    = light ? '#0055cc'                 : '#31ECC6';
   const btnSecBg  = light ? '#f3f4f6'                 : '#1a3557';
   const btnSecText = light ? '#0c2340'                : '#8e9bab';
 
