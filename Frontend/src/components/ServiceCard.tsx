@@ -35,6 +35,15 @@ export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
 
       <p className="text-sm flex-1 leading-relaxed" style={{ color: text2 }}>{service.descricao}</p>
 
+      {isCliente && service.users && (
+        <div className="flex items-center gap-1.5 text-xs" style={{ color: text2 }}>
+          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span className="truncate">{service.users.nome_completo}</span>
+        </div>
+      )}
+
       <div className="text-xs" style={{ color: text3 }}>
         Criado em {new Date(service.created_at).toLocaleDateString('pt-PT')}
       </div>
