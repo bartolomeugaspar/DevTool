@@ -5,14 +5,26 @@ import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 
 export default function HireService() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { token, setAuth } = useAuthStore();
+  const { theme } = useThemeStore();
+  const light = theme === 'light';
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  const card    = light ? '#ffffff'              : '#0e1e35';
+  const border  = light ? '#e5e7eb'              : '#1a3557';
+  const text1   = light ? '#0c2340'              : '#ffffff';
+  const text2   = light ? '#586779'              : '#8e9bab';
+  const accent  = light ? '#007aff'              : '#31ECC6';
+  const accentBg = light ? 'rgba(0,122,255,0.10)' : 'rgba(49,236,198,0.12)';
+  const btnSecBg = light ? '#f3f4f6'             : '#1a3557';
+  const btnSecText = light ? '#0c2340'           : '#8e9bab';
 
   const { data: service, isLoading } = useQuery({
     queryKey: ['service', id],
@@ -40,7 +52,7 @@ export default function HireService() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-indigo-500" />
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2" style={{ borderColor: accent }} />
       </div>
     );
   }
@@ -64,28 +76,30 @@ export default function HireService() {
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl font-bold text-white mb-2">Contratação confirmada</h2>
-        <p className="text-gray-400 text-sm mb-8 max-w-xs">
-          O serviço <span className="text-white font-medium">{service.nome}</span> foi contratado.
-          O valor de <span className="text-white font-medium">Kz {service.preco.toFixed(2)}</span> foi
+        <h2 className="text-2xl font-bold mb-2" style={{ color: text1 }}>Contratação confirmada</h2>
+        <p className="text-sm mb-8 max-w-xs" style={{ color: text2 }}>
+          O serviço <span className="font-medium" style={{ color: text1 }}>{service.nome}</span> foi contratado.
+          O valor de <span className="font-medium" style={{ color: text1 }}>Kz {service.preco.toFixed(2)}</span> foi
           debitado do seu saldo.
         </p>
 
         {/* Summary card */}
-        <div className="w-full bg-gray-900 border border-gray-800 rounded-xl p-5 mb-8 text-left space-y-3">
+        <div className="w-full rounded-2xl p-5 mb-8 text-left space-y-3"
+          style={{ background: card, border: `1px solid ${border}` }}>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Serviço</span>
-            <span className="text-white font-medium">{service.nome}</span>
+            <span style={{ color: text2 }}>Serviço</span>
+            <span className="font-medium" style={{ color: text1 }}>{service.nome}</span>
           </div>
-          <div className="border-t border-gray-800" />
+          <div style={{ borderTop: `1px solid ${border}` }} />
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Valor pago</span>
-            <span className="font-semibold" style={{ color: '#31ECC6' }}>Kz {service.preco.toFixed(2)}</span>
+            <span style={{ color: text2 }}>Valor pago</span>
+            <span className="font-semibold" style={{ color: accent }}>Kz {service.preco.toFixed(2)}</span>
           </div>
-          <div className="border-t border-gray-800" />
+          <div style={{ borderTop: `1px solid ${border}` }} />
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Estado</span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: 'rgba(49,236,198,0.12)', color: '#31ECC6' }}>
+            <span style={{ color: text2 }}>Estado</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+              style={{ background: 'rgba(49,236,198,0.12)', color: '#31ECC6' }}>
               <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
               Concluído
             </span>
@@ -96,14 +110,19 @@ export default function HireService() {
         <div className="flex gap-3 w-full">
           <button
             onClick={() => navigate('/services')}
-            className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 rounded-lg transition-colors text-sm"
+            className="flex-1 font-medium py-2.5 rounded-xl transition-all text-sm"
+            style={{ background: btnSecBg, color: btnSecText }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             Explorar serviços
           </button>
           <button
             onClick={() => navigate('/transactions')}
-            className="flex-1 text-white font-medium py-2.5 rounded-lg transition-colors text-sm"
-            style={{ background: 'linear-gradient(135deg, #31ECC6 0%, #1ab89e 100%)' }}
+            className="flex-1 text-white font-medium py-2.5 rounded-xl transition-all text-sm"
+            style={{ background: `linear-gradient(135deg, ${accent} 0%, ${light ? '#0055cc' : '#1ab89e'} 100%)` }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             Ver transações
           </button>
@@ -114,15 +133,16 @@ export default function HireService() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold text-white mb-8">Contratar Serviço</h1>
+      <h1 className="text-2xl font-bold mb-8" style={{ color: text1 }}>Contratar Serviço</h1>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8">
+      <div className="rounded-2xl p-8" style={{ background: card, border: `1px solid ${border}` }}>
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-white mb-2">{service.nome}</h2>
-          <p className="text-gray-400 text-sm mb-4">{service.descricao}</p>
-          <div className="bg-gray-800 rounded-lg p-4 flex items-center justify-between">
-            <span className="text-gray-400 text-sm">Valor a debitar</span>
-            <span className="text-2xl font-bold text-indigo-400">
+          <h2 className="text-xl font-semibold mb-2" style={{ color: text1 }}>{service.nome}</h2>
+          <p className="text-sm mb-4" style={{ color: text2 }}>{service.descricao}</p>
+          <div className="rounded-xl p-4 flex items-center justify-between"
+            style={{ background: light ? '#f3f4f6' : '#0c2340', border: `1px solid ${border}` }}>
+            <span className="text-sm" style={{ color: text2 }}>Valor a debitar</span>
+            <span className="text-2xl font-bold" style={{ color: accent }}>
               Kz {service.preco.toFixed(2)}
             </span>
           </div>
@@ -134,7 +154,7 @@ export default function HireService() {
           </div>
         )}
 
-        <p className="text-gray-500 text-xs mb-6">
+        <p className="text-xs mb-6" style={{ color: text2 }}>
           Ao confirmar, o valor será debitado do seu saldo e transferido para o prestador.
         </p>
 
@@ -142,14 +162,20 @@ export default function HireService() {
           <button
             type="button"
             onClick={() => navigate('/services')}
-            className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-2.5 rounded-lg transition-colors"
+            className="flex-1 font-medium py-2.5 rounded-xl transition-all"
+            style={{ background: btnSecBg, color: btnSecText }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             Voltar
           </button>
           <button
             onClick={() => hireMutation.mutate({ servico_id: service.id })}
             disabled={hireMutation.isPending}
-            className="flex-1 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-medium py-2.5 rounded-lg transition-colors"
+            className="flex-1 font-medium py-2.5 rounded-xl transition-all disabled:opacity-50 text-white"
+            style={{ background: accent }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             {hireMutation.isPending ? 'A processar...' : 'Confirmar Contratação'}
           </button>
