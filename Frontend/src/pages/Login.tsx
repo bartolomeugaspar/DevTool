@@ -108,33 +108,33 @@ export default function Login() {
         style={{ background: 'linear-gradient(135deg, #3730a3 0%, #4f46e5 45%, #6366f1 100%)' }}>
 
         {/* Background blobs */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
-        <div className="absolute -bottom-32 -right-20 w-[500px] h-[500px] bg-indigo-900/40 rounded-full blur-3xl" />
+        <div className="animate-drift absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="animate-drift absolute -bottom-32 -right-20 w-[500px] h-[500px] bg-indigo-900/40 rounded-full blur-3xl" style={{ animationDelay: '-3s' }} />
 
         {/* Top-right dot grid */}
-        <div className="absolute top-10 right-10 grid grid-cols-5 gap-2 opacity-30">
+        <div className="animate-float absolute top-10 right-10 grid grid-cols-5 gap-2 opacity-30">
           {Array.from({ length: 25 }).map((_, i) => (
             <div key={i} className="w-1 h-1 bg-white rounded-full" />
           ))}
         </div>
 
         {/* Bottom-left dot grid */}
-        <div className="absolute bottom-10 left-10 grid grid-cols-4 gap-2 opacity-20">
+        <div className="animate-float-inv absolute bottom-10 left-10 grid grid-cols-4 gap-2 opacity-20" style={{ animationDelay: '-1.5s' }}>
           {Array.from({ length: 16 }).map((_, i) => (
             <div key={i} className="w-1 h-1 bg-white rounded-full" />
           ))}
         </div>
 
         {/* Large circle ring top-left */}
-        <div className="absolute -top-16 -left-16 w-72 h-72 border border-white/10 rounded-full" />
-        <div className="absolute -top-8 -left-8 w-56 h-56 border border-white/10 rounded-full" />
+        <div className="animate-spin-slow absolute -top-16 -left-16 w-72 h-72 border border-white/10 rounded-full" />
+        <div className="animate-spin-reverse absolute -top-8 -left-8 w-56 h-56 border border-white/10 rounded-full" />
 
         {/* Large circle ring bottom-right */}
-        <div className="absolute -bottom-20 -right-20 w-80 h-80 border border-white/10 rounded-full" />
+        <div className="animate-spin-slow absolute -bottom-20 -right-20 w-80 h-80 border border-white/10 rounded-full" style={{ animationDelay: '-6s' }} />
 
         {/* Floating card accent */}
-        <div className="absolute top-1/4 right-8 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl rotate-12 border border-white/20" />
-        <div className="absolute bottom-1/4 left-8 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl -rotate-12 border border-white/20" />
+        <div className="animate-float-slow absolute top-1/4 right-8 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl rotate-12 border border-white/20" />
+        <div className="animate-float-inv absolute bottom-1/4 left-8 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl -rotate-12 border border-white/20" style={{ animationDelay: '-2s' }} />
 
         {/* Main content */}
         <div className="relative z-10 flex flex-col items-center text-center max-w-sm">
