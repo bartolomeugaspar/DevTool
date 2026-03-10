@@ -152,11 +152,31 @@ async function cancelReservation(req, res) {
 }
 
 async function history(req, res) {
-  const { data, error } = await supabase
+  const { tipo, id } = req.user;
+
+  let query = supabase
     .from('reservations')
-    .select('*, services(*)')
-    .eq('cliente_id', req.user.id)
-    .order('created_at', { ascending: false });
+    .select('*, services(*), users:cliente_id(id, nome_completo, email, nif)');
+
+  if (tipo === 'prestador') {
+    // Get reservations where the service belongs to this provider
+    const { data: providerServices, error: svcErr } = await supabase
+      .from('services')
+      .select('id')
+      .eq('prestador_id', id);
+
+    if (svcErr) return res.status(400).json(svcErr);
+
+    const serviceIds = (providerServices || []).map(s => s.id);
+
+    if (serviceIds.length === 0) return res.json([]);
+
+    query = query.in('servico_id', serviceIds);
+  } else {
+    query = query.eq('cliente_id', id);
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false });
 
   if (error) return res.status(400).json(error);
 
