@@ -36,7 +36,7 @@ const FEATURES = [
   },
 ];
 
-const STAGGER_MS = 700;   // gap between each pill appearing
+const STAGGER_MS = 1000;   // gap between each pill appearing
 const HOLD_MS    = 2000;  // how long all pills stay visible before reset
 
 function FeaturePills() {
