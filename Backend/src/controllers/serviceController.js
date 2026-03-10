@@ -38,6 +38,39 @@ async function getServiceById(req, res) {
   res.json(data);
 }
 
+async function updateService(req, res) {
+  const { id } = req.params;
+  const { nome, descricao, preco } = req.body;
+
+  const { data: service, error: fetchError } = await supabase
+    .from('services')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchError || !service) return res.status(404).json({ error: 'Serviço não encontrado' });
+
+  if (service.prestador_id !== req.user.id) {
+    return res.status(403).json({ error: 'Apenas o prestador dono do serviço pode editá-lo' });
+  }
+
+  const updates = {};
+  if (nome !== undefined) updates.nome = nome;
+  if (descricao !== undefined) updates.descricao = descricao;
+  if (preco !== undefined) updates.preco = preco;
+
+  const { data, error } = await supabase
+    .from('services')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) return res.status(400).json(error);
+
+  res.json(data);
+}
+
 async function deleteService(req, res) {
   const { id } = req.params;
 
@@ -69,4 +102,4 @@ async function deleteService(req, res) {
   res.json({ message: 'Serviço removido com sucesso' });
 }
 
-module.exports = { createService, getServices, getServiceById, deleteService };
+module.exports = { createService, getServices, getServiceById, updateService, deleteService };

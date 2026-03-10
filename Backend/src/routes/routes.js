@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { register, login } = require('../controllers/authController');
-const { createService, getServices, getServiceById, deleteService } = require('../controllers/serviceController');
+const { createService, getServices, getServiceById, updateService, deleteService } = require('../controllers/serviceController');
 const { createReservation, cancelReservation, history } = require('../controllers/reservationController');
 const { auth, isCliente, isPrestador } = require('../middleware/auth');
 
@@ -15,6 +15,7 @@ router.get('/me', auth, require('../controllers/authController').me);
 router.get('/services', auth, getServices);
 router.post('/services', auth, isPrestador, createService);
 router.get('/services/:id', auth, getServiceById);
+router.put('/services/:id', auth, isPrestador, updateService);
 router.delete('/services/:id', auth, isPrestador, deleteService);
 
 // Reservations
