@@ -42,4 +42,16 @@ async function login(req, res) {
   res.json({ token });
 }
 
-module.exports = { register, login };
+async function me(req, res) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('id, nome_completo, nif, email, tipo_usuario, saldo, created_at')
+    .eq('id', req.user.id)
+    .single();
+
+  if (error || !data) return res.status(404).json({ error: 'Utilizador não encontrado' });
+
+  res.json(data);
+}
+
+module.exports = { register, login, me };

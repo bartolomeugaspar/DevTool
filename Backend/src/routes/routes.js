@@ -9,6 +9,7 @@ const { auth, isCliente, isPrestador } = require('../middleware/auth');
 // Auth
 router.post('/register', register);
 router.post('/login', login);
+router.get('/me', auth, require('../controllers/authController').me);
 
 // Services
 router.get('/services', auth, getServices);
