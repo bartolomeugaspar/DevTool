@@ -53,41 +53,75 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col items-center justify-center p-12 relative overflow-hidden">
-        {/* Decorative shapes */}
-        <div className="absolute top-10 left-10 w-16 h-16 border-2 border-indigo-400/40 rounded-full" />
-        <div className="absolute top-24 right-16 w-4 h-4 bg-indigo-400/30 rounded-full" />
-        <div className="absolute bottom-20 left-16 w-8 h-8 border-2 border-indigo-400/40 rounded-full" />
-        <div className="absolute top-1/3 right-8 text-indigo-400/30 text-3xl font-light">+</div>
-        <div className="absolute bottom-1/3 left-8 text-indigo-400/30 text-3xl font-light">+</div>
-        <div className="absolute top-16 right-24 grid grid-cols-3 gap-1">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="w-1.5 h-1.5 bg-indigo-400/40 rounded-full" />
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-14 relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #3730a3 0%, #4f46e5 45%, #6366f1 100%)' }}>
+
+        {/* Background blobs */}
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -right-20 w-[500px] h-[500px] bg-indigo-900/40 rounded-full blur-3xl" />
+
+        {/* Top-right dot grid */}
+        <div className="absolute top-10 right-10 grid grid-cols-5 gap-2 opacity-30">
+          {Array.from({ length: 25 }).map((_, i) => (
+            <div key={i} className="w-1 h-1 bg-white rounded-full" />
           ))}
         </div>
-        {/* Decorative arc */}
-        <div className="absolute bottom-0 right-0 w-48 h-48 border-4 border-indigo-400/20 rounded-full translate-x-1/2 translate-y-1/2" />
 
-        <div className="relative z-10 text-center">
-          <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <span className="text-white text-2xl font-bold">DT</span>
+        {/* Bottom-left dot grid */}
+        <div className="absolute bottom-10 left-10 grid grid-cols-4 gap-2 opacity-20">
+          {Array.from({ length: 16 }).map((_, i) => (
+            <div key={i} className="w-1 h-1 bg-white rounded-full" />
+          ))}
+        </div>
+
+        {/* Large circle ring top-left */}
+        <div className="absolute -top-16 -left-16 w-72 h-72 border border-white/10 rounded-full" />
+        <div className="absolute -top-8 -left-8 w-56 h-56 border border-white/10 rounded-full" />
+
+        {/* Large circle ring bottom-right */}
+        <div className="absolute -bottom-20 -right-20 w-80 h-80 border border-white/10 rounded-full" />
+
+        {/* Floating card accent */}
+        <div className="absolute top-1/4 right-8 w-14 h-14 bg-white/10 backdrop-blur-sm rounded-2xl rotate-12 border border-white/20" />
+        <div className="absolute bottom-1/4 left-8 w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl -rotate-12 border border-white/20" />
+
+        {/* Main content */}
+        <div className="relative z-10 flex flex-col items-center text-center max-w-sm">
+          {/* Logo */}
+          <div className="w-20 h-20 bg-white/15 backdrop-blur-sm rounded-3xl flex items-center justify-center mb-8 border border-white/25 shadow-2xl">
+            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">DevTool</h1>
-          <p className="text-indigo-200 text-lg max-w-xs">
-            Plataforma de serviços e transações entre clientes e prestadores
+
+          <h1 className="text-5xl font-extrabold text-white tracking-tight mb-3">DevTool</h1>
+          <div className="w-12 h-1 bg-white/40 rounded-full mb-5" />
+          <p className="text-indigo-100 text-base leading-relaxed mb-10">
+            Plataforma profissional de serviços e transações entre clientes e prestadores
           </p>
-          <div className="mt-8 flex flex-col gap-3 text-left">
-            {['Registe e gira os seus serviços', 'Contrate com segurança', 'Histórico de transações completo'].map((f) => (
-              <div key={f} className="flex items-center gap-3 text-indigo-100 text-sm">
-                <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+
+          {/* Feature pills */}
+          <div className="flex flex-col gap-3 w-full">
+            {[
+              { icon: 'M13 10V3L4 14h7v7l9-11h-7z', label: 'Gestão de serviços em tempo real' },
+              { icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', label: 'Transações seguras e confiáveis' },
+              { icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Histórico completo de transações' },
+            ].map(({ icon, label }) => (
+              <div key={label} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-left">
+                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
                   </svg>
                 </div>
-                {f}
+                <span className="text-white text-sm font-medium">{label}</span>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Bottom tagline */}
+        <div className="absolute bottom-8 text-indigo-300/60 text-xs tracking-widest uppercase font-medium">
+          Powered by DevTool Platform
         </div>
       </div>
 
