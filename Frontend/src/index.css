@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  html, body {
+    height: 100%;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
   body {
-    @apply bg-gray-950 text-gray-100 min-h-screen;
+    @apply bg-gray-950 text-gray-100;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  #root {
+    height: 100%;
   }
 }
 

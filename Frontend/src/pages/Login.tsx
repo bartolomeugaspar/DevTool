@@ -140,7 +140,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="h-full min-h-screen flex">
             {/* Left Panel */}
             <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-14 relative overflow-hidden min-h-screen"
                 style={{ background: 'linear-gradient(135deg, #061628 0%, #0c2340 50%, #0e2d52 100%)' }}>
@@ -205,7 +205,7 @@ export default function Login() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-10 lg:p-8 min-h-screen" style={{ background: '#060f1c' }}>
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-10 lg:p-8 flex-1" style={{ background: '#060f1c' }}>
                 <div className="w-full max-w-sm">
                     {/* Mobile logo */}
                     <div className="lg:hidden flex justify-center mb-8">
