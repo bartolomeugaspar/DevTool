@@ -16,7 +16,7 @@ async function createService(req, res) {
 async function getServices(req, res) {
   const { data, error } = await supabase
     .from('services')
-    .select('*')
+    .select('*, users:prestador_id(id, nome_completo, email)')
     .order('created_at', { ascending: false });
 
   if (error) return res.status(400).json(error);
