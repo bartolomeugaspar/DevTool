@@ -19,13 +19,20 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
-  const { email, senha } = req.body;
+  const { email, nif, senha } = req.body;
 
-  const { data: user } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .single();
+  if (!email && !nif) {
+    return res.status(400).json({ error: 'Forneça email ou NIF para autenticar' });
+  }
+
+  let query = supabase.from('users').select('*');
+  if (email) {
+    query = query.eq('email', email);
+  } else {
+    query = query.eq('nif', nif);
+  }
+
+  const { data: user } = await query.single();
 
   if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
 
