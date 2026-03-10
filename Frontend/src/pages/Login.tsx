@@ -37,37 +37,65 @@ const FEATURES = [
 ];
 
 function FeaturePills() {
-  const [started, setStarted] = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // visibleSet: set of pill indices currently in "visible" state
+  const [visibleSet, setVisibleSet] = useState<Set<number>>(new Set());
+  const cycleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    timerRef.current = setTimeout(() => setStarted(true), 300);
+    let cancelled = false;
+
+    function runCycle() {
+      if (cancelled) return;
+
+      // Step 1: slide all out (reset)
+      setVisibleSet(new Set());
+
+      // Step 2: slide each pill in with stagger
+      FEATURES.forEach((_, i) => {
+        cycleRef.current = setTimeout(() => {
+          if (cancelled) return;
+          setVisibleSet(prev => new Set([...prev, i]));
+        }, 400 + i * 200); // first pill at 400ms, each +200ms
+      });
+
+      // Step 3: hold visible for 2 s after last pill appeared, then repeat
+      const holdDelay = 400 + (FEATURES.length - 1) * 200 + 2000;
+      cycleRef.current = setTimeout(() => {
+        if (!cancelled) runCycle();
+      }, holdDelay);
+    }
+
+    runCycle();
+
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
+      cancelled = true;
+      if (cycleRef.current) clearTimeout(cycleRef.current);
     };
   }, []);
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      {FEATURES.map(({ icon, label }, i) => (
-        <div
-          key={label}
-          style={{
-            opacity: started ? 1 : 0,
-            transform: started ? 'translateX(0)' : 'translateX(-48px)',
-            transition: `opacity 0.55s ease, transform 0.55s ease`,
-            transitionDelay: started ? `${i * 0.18}s` : '0s',
-          }}
-          className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-left"
-        >
-          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
-            </svg>
+      {FEATURES.map(({ icon, label }, i) => {
+        const visible = visibleSet.has(i);
+        return (
+          <div
+            key={label}
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? 'translateX(0)' : 'translateX(-48px)',
+              transition: 'opacity 0.5s ease, transform 0.5s ease',
+            }}
+            className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-left"
+          >
+            <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
+              </svg>
+            </div>
+            <span className="text-white text-sm font-medium">{label}</span>
           </div>
-          <span className="text-white text-sm font-medium">{label}</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
