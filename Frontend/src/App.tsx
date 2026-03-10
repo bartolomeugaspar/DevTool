@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
+import { ToastProvider } from './components/Toast';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -8,6 +9,7 @@ import Services from './pages/Services';
 import CreateService from './pages/CreateService';
 import Transactions from './pages/Transactions';
 import HireService from './pages/HireService';
+import NotFound from './pages/NotFound';
 import { useAuthStore } from './store/authStore';
 
 const queryClient = new QueryClient({
@@ -94,7 +96,7 @@ function AppRoutes() {
       />
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -104,6 +106,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <AppRoutes />
+        <ToastProvider />
       </BrowserRouter>
     </QueryClientProvider>
   );
