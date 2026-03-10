@@ -61,4 +61,34 @@ async function me(req, res) {
   res.json(data);
 }
 
-module.exports = { register, login, me };
+async function topup(req, res) {
+  const ALLOWED_AMOUNTS = [500, 1000, 2500, 5000];
+  const valor = Number(req.body.valor);
+
+  if (!ALLOWED_AMOUNTS.includes(valor)) {
+    return res.status(400).json({ error: 'Valor inválido. Escolha: 500, 1000, 2500 ou 5000 Kz' });
+  }
+
+  const { data: user, error: fetchError } = await supabase
+    .from('users')
+    .select('saldo')
+    .eq('id', req.user.id)
+    .single();
+
+  if (fetchError || !user) return res.status(404).json({ error: 'Utilizador não encontrado' });
+
+  const novoSaldo = user.saldo + valor;
+
+  const { data: updated, error: updateError } = await supabase
+    .from('users')
+    .update({ saldo: novoSaldo })
+    .eq('id', req.user.id)
+    .select('id, nome_completo, nif, email, tipo_usuario, saldo, created_at')
+    .single();
+
+  if (updateError) return res.status(500).json({ error: 'Erro ao actualizar saldo' });
+
+  res.json(updated);
+}
+
+module.exports = { register, login, me, topup };
