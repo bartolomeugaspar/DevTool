@@ -112,7 +112,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen transition-colors duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <div className="w-full px-4 sm:px-6 py-8 space-y-8">
 
         {/* ── Hero header ─────────────────────────────────────────────────── */}
         <div className="rounded-2xl px-4 sm:px-6 py-5 sm:py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5"

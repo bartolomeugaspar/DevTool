@@ -85,7 +85,7 @@ export default function Transactions() {
         isPending={cancelMutation.isPending}
       />
     )}
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="w-full px-4 sm:px-6 py-8">
       {/* Header */}
       <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Histórico de Transações</h1>
 

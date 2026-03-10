@@ -68,7 +68,7 @@ export default function Services() {
 
   if (isError) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div className="w-full px-4 sm:px-6 py-8">
         <p className="text-red-400">Erro ao carregar serviços.</p>
       </div>
     );
