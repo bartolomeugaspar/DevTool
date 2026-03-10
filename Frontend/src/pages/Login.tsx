@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -20,6 +20,57 @@ const registerSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
+
+const FEATURES = [
+  {
+    icon: 'M13 10V3L4 14h7v7l9-11h-7z',
+    label: 'Gestão de serviços em tempo real',
+  },
+  {
+    icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+    label: 'Transações seguras e confiáveis',
+  },
+  {
+    icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
+    label: 'Histórico completo de transações',
+  },
+];
+
+function FeaturePills() {
+  const [started, setStarted] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    timerRef.current = setTimeout(() => setStarted(true), 300);
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-3 w-full">
+      {FEATURES.map(({ icon, label }, i) => (
+        <div
+          key={label}
+          style={{
+            opacity: started ? 1 : 0,
+            transform: started ? 'translateX(0)' : 'translateX(-48px)',
+            transition: `opacity 0.55s ease, transform 0.55s ease`,
+            transitionDelay: started ? `${i * 0.18}s` : '0s',
+          }}
+          className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-left"
+        >
+          <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
+            </svg>
+          </div>
+          <span className="text-white text-sm font-medium">{label}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false);
@@ -100,23 +151,8 @@ export default function Login() {
             Plataforma profissional de serviços e transações entre clientes e prestadores
           </p>
 
-          {/* Feature pills */}
-          <div className="flex flex-col gap-3 w-full">
-            {[
-              { icon: 'M13 10V3L4 14h7v7l9-11h-7z', label: 'Gestão de serviços em tempo real' },
-              { icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', label: 'Transações seguras e confiáveis' },
-              { icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', label: 'Histórico completo de transações' },
-            ].map(({ icon, label }) => (
-              <div key={label} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-4 py-3 text-left">
-                <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={icon} />
-                  </svg>
-                </div>
-                <span className="text-white text-sm font-medium">{label}</span>
-              </div>
-            ))}
-          </div>
+          {/* Feature pills — staggered animation */}
+          <FeaturePills />
         </div>
 
         {/* Bottom tagline */}
