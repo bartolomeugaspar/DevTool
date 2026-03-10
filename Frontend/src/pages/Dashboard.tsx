@@ -4,6 +4,8 @@ import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
+import { tokens } from '../lib/theme';
+import { STATUS_STYLES, QUERY_KEYS, ROUTES } from '../lib/constants';
 import type { Reservation } from '../types';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -15,14 +17,8 @@ function greeting() {
   return 'Boa noite';
 }
 
-const STATUS_MAP = {
-  pendente:  { label: 'Pendente',  bg: 'rgba(234,179,8,0.10)',   color: '#eab308' },
-  concluido: { label: 'Concluído', bg: 'rgba(49,236,198,0.10)',  color: '#31ECC6' },
-  cancelado: { label: 'Cancelado', bg: 'rgba(248,113,113,0.10)', color: '#f87171' },
-} as const;
-
 function statusBadge(status: Reservation['status']) {
-  const s = STATUS_MAP[status] ?? STATUS_MAP.pendente;
+  const s = STATUS_STYLES[status] ?? STATUS_STYLES.pendente;
   return (
     <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0"
       style={{ background: s.bg, color: s.color }}>
@@ -53,12 +49,12 @@ export default function Dashboard() {
   const firstName = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
 
   const { data: services = [], isLoading: loadingServices } = useQuery({
-    queryKey: ['services'],
+    queryKey: QUERY_KEYS.SERVICES,
     queryFn: serviceService.getAll,
   });
 
   const { data: reservations = [], isLoading: loadingReservations } = useQuery({
-    queryKey: ['reservations'],
+    queryKey: QUERY_KEYS.RESERVATIONS,
     queryFn: transactionService.getHistory,
   });
 
@@ -74,14 +70,7 @@ export default function Dashboard() {
   const pending   = reservations.filter(r => r.status === 'pendente').length;
 
   // ── theme tokens ──────────────────────────────────────────────────────────
-  const card     = light ? '#ffffff'              : '#0e1e35';
-  const border   = light ? '#e5e7eb'              : '#1a3557';
-  const text1    = light ? '#0c2340'              : '#ffffff';
-  const text2    = light ? '#586779'              : '#586779';
-  const skelBg   = light ? '#e5e7eb'              : '#1a3557';
-  const hover    = light ? '#f3f4f6'              : 'rgba(255,255,255,0.03)';
-  const accent   = light ? '#002f7a'              : '#31ECC6';
-  const accentBg = light ? 'rgba(0,47,122,0.10)' : 'rgba(49,236,198,0.10)';
+  const { card, border, text1, text2, skelBg, hover, accent, accentBg } = tokens(light);
 
   const Skel = ({ w = '6rem', h = '1.75rem' }: { w?: string; h?: string }) => (
     <div className="rounded-lg animate-pulse" style={{ width: w, height: h, background: skelBg }} />
@@ -121,9 +110,9 @@ export default function Dashboard() {
 
   // ── quick actions ─────────────────────────────────────────────────────────
   const actions = [
-    { to: '/services', label: 'Explorar serviços', desc: 'Ver todos os serviços', accent: accent, path: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /> },
-    { to: '/transactions', label: 'Transações', desc: 'Histórico de movimentos', accent: '#818cf8', path: <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /> },
-    ...(isPrestador ? [{ to: '/services/create', label: 'Criar serviço', desc: 'Publicar nova oferta', accent: '#f472b6', path: <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /> }] : []),
+    { to: ROUTES.SERVICES,        label: 'Explorar serviços', desc: 'Ver todos os serviços',  accent: accent,     path: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /> },
+    { to: ROUTES.TRANSACTIONS,    label: 'Transações',        desc: 'Histórico de movimentos', accent: '#818cf8',  path: <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /> },
+    ...(isPrestador ? [{ to: ROUTES.SERVICE_CREATE, label: 'Criar serviço', desc: 'Publicar nova oferta', accent: '#f472b6', path: <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /> }] : []),
   ];
 
   return (
@@ -189,7 +178,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-between px-5 py-4"
               style={{ borderBottom: `1px solid ${border}` }}>
               <h2 className="text-sm font-semibold" style={{ color: text1 }}>Actividade recente</h2>
-              <Link to="/transactions" className="text-xs font-medium transition-opacity hover:opacity-70"
+              <Link to={ROUTES.TRANSACTIONS} className="text-xs font-medium transition-opacity hover:opacity-70"
                 style={{ color: accent }}>
                 Ver tudo →
               </Link>
@@ -217,7 +206,7 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 <p className="text-sm" style={{ color: text2 }}>Sem actividade ainda</p>
-                <Link to="/services" className="text-xs font-medium hover:opacity-70 transition-opacity" style={{ color: accent }}>
+                <Link to={ROUTES.SERVICES} className="text-xs font-medium hover:opacity-70 transition-opacity" style={{ color: accent }}>
                   Explorar serviços →
                 </Link>
               </div>

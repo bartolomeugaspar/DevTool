@@ -6,6 +6,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { serviceService } from '../services/serviceService';
 import { useThemeStore } from '../store/themeStore';
+import { tokens } from '../lib/theme';
+import { QUERY_KEYS, ROUTES } from '../lib/constants';
 
 const schema = z.object({
   nome: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
@@ -22,16 +24,8 @@ export default function CreateService() {
   const { theme } = useThemeStore();
   const light = theme === 'light';
 
-  const card      = light ? '#ffffff'                 : '#0e1e35';
-  const border    = light ? '#e5e7eb'                 : '#1a3557';
-  const text1     = light ? '#0c2340'                 : '#ffffff';
-  const text2     = light ? '#586779'                 : '#8e9bab';
-  const inputBg   = light ? '#f9fafb'                 : '#0c2340';
-  const inputBorder = light ? '#e5e7eb'               : '#1a3557';
-  const inputFocusBorder = light ? '#002f7a'          : '#31ECC6';
-  const accent    = light ? '#002f7a'                 : '#31ECC6';
-  const btnSecBg  = light ? '#f3f4f6'                 : '#1a3557';
-  const btnSecText = light ? '#0c2340'                : '#8e9bab';
+  const { card, border, text1, text2, inputBg, inputBorder, accent, btnSecBg, btnSecText } = tokens(light);
+  const inputFocusBorder = accent;
 
   const {
     register,
@@ -42,8 +36,8 @@ export default function CreateService() {
   const mutation = useMutation({
     mutationFn: serviceService.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
-      navigate('/services');
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SERVICES });
+      navigate(ROUTES.SERVICES);
     },
     onError: (err: unknown) => {
       const error = err as { response?: { data?: { message?: string } } };
@@ -117,7 +111,7 @@ export default function CreateService() {
         <div className="flex gap-3 pt-2">
           <button
             type="button"
-            onClick={() => navigate('/services')}
+            onClick={() => navigate(ROUTES.SERVICES)}
             className="flex-1 font-medium py-2.5 rounded-xl transition-all"
             style={{ background: btnSecBg, color: btnSecText }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}

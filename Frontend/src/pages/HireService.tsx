@@ -6,6 +6,8 @@ import { transactionService } from '../services/transactionService';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
+import { tokens } from '../lib/theme';
+import { QUERY_KEYS, ROUTES } from '../lib/constants';
 
 export default function HireService() {
   const { id } = useParams<{ id: string }>();
@@ -17,17 +19,10 @@ export default function HireService() {
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  const card    = light ? '#ffffff'              : '#0e1e35';
-  const border  = light ? '#e5e7eb'              : '#1a3557';
-  const text1   = light ? '#0c2340'              : '#ffffff';
-  const text2   = light ? '#586779'              : '#8e9bab';
-  const accent  = light ? '#002f7a'              : '#31ECC6';
-  const accentBg = light ? 'rgba(0,47,122,0.10)' : 'rgba(49,236,198,0.12)';
-  const btnSecBg = light ? '#f3f4f6'             : '#1a3557';
-  const btnSecText = light ? '#0c2340'           : '#8e9bab';
+  const { card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText } = tokens(light);
 
   const { data: service, isLoading } = useQuery({
-    queryKey: ['service', id],
+    queryKey: QUERY_KEYS.SERVICE(id!),
     queryFn: () => serviceService.getById(id!),
     enabled: !!id,
   });
@@ -35,7 +30,7 @@ export default function HireService() {
   const hireMutation = useMutation({
     mutationFn: transactionService.hire,
     onSuccess: async () => {
-      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.RESERVATIONS });
       // Refresh user profile to update saldo
       if (token) {
         const updatedUser = await authService.getMe();
@@ -109,7 +104,7 @@ export default function HireService() {
         {/* Actions */}
         <div className="flex gap-3 w-full">
           <button
-            onClick={() => navigate('/services')}
+            onClick={() => navigate(ROUTES.SERVICES)}
             className="flex-1 font-medium py-2.5 rounded-xl transition-all text-sm"
             style={{ background: btnSecBg, color: btnSecText }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
@@ -118,7 +113,7 @@ export default function HireService() {
             Explorar serviços
           </button>
           <button
-            onClick={() => navigate('/transactions')}
+            onClick={() => navigate(ROUTES.TRANSACTIONS)}
             className="flex-1 text-white font-medium py-2.5 rounded-xl transition-all text-sm"
             style={{ background: `linear-gradient(135deg, ${accent} 0%, ${light ? '#002f7a' : '#1ab89e'} 100%)` }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
@@ -161,7 +156,7 @@ export default function HireService() {
         <div className="flex gap-3">
           <button
             type="button"
-            onClick={() => navigate('/services')}
+            onClick={() => navigate(ROUTES.SERVICES)}
             className="flex-1 font-medium py-2.5 rounded-xl transition-all"
             style={{ background: btnSecBg, color: btnSecText }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}

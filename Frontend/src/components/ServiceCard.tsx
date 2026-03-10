@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import type { Service } from '../types';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
+import { tokens } from '../lib/theme';
+import { ROUTES } from '../lib/constants';
 
 interface ServiceCardProps {
   service: Service;
@@ -11,20 +13,14 @@ interface ServiceCardProps {
 export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
   const { user } = useAuthStore();
   const { theme } = useThemeStore();
-  const light = theme === 'light';
+  const t = tokens(theme === 'light');
 
   const isOwner   = user?.id === service.prestador_id;
   const isCliente = user?.tipo_usuario === 'cliente';
 
-  // theme tokens
-  const card     = light ? '#ffffff'               : '#0e1e35';
-  const border   = light ? '#e5e7eb'               : '#1a3557';
-  const text1    = light ? '#0c2340'               : '#ffffff';
-  const text2    = light ? '#586779'               : '#8e9bab';
-  const text3    = light ? '#94a3b8'               : '#304259';
-  const accent   = light ? '#002f7a'               : '#31ECC6';
-  const accentBg = light ? 'rgba(0,47,122,0.08)'  : 'rgba(49,236,198,0.08)';
-  const hoverBorder = light ? '#002f7a66'          : '#31ECC666';
+  const { card, border, text1, text2, text3, accent } = t;
+  const accentBg    = theme === 'light' ? 'rgba(0,47,122,0.08)'  : 'rgba(49,236,198,0.08)';
+  const hoverBorder = theme === 'light' ? '#002f7a66'            : '#31ECC666';
 
   return (
     <div
@@ -49,7 +45,7 @@ export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
       <div className="flex gap-2 mt-auto pt-1">
         {isCliente && (
           <Link
-            to={`/services/${service.id}/hire`}
+            to={ROUTES.SERVICE_HIRE(service.id)}
             className="flex-1 text-center text-sm font-semibold py-2 rounded-xl transition-all"
             style={{ background: accent, color: '#ffffff' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}

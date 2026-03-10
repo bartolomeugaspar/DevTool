@@ -3,14 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '../services/transactionService';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
+import { tokens } from '../lib/theme';
+import { STATUS_STYLES, QUERY_KEYS } from '../lib/constants';
 import type { Reservation } from '../types';
 import CancelModal from '../components/CancelModal';
-
-const STATUS_STYLES: Record<string, { bg: string; color: string; label: string }> = {
-  pendente:  { bg: 'rgba(234,179,8,0.10)',   color: '#eab308', label: 'Pendente'  },
-  concluido: { bg: 'rgba(49,236,198,0.10)',  color: '#31ECC6', label: 'Concluído' },
-  cancelado: { bg: 'rgba(248,113,113,0.10)', color: '#f87171', label: 'Cancelado' },
-};
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 export default function Transactions() {
@@ -21,23 +17,18 @@ export default function Transactions() {
 
   const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
 
-  const card   = light ? '#ffffff' : '#0e1e35';
-  const border = light ? '#e5e7eb' : '#1a3557';
-  const thead  = light ? '#f3f4f6' : '#0c2340';
-  const text1  = light ? '#0c2340' : '#ffffff';
-  const text2  = light ? '#586779' : '#8e9bab';
-  const accent = light ? '#002f7a' : '#31ECC6';
-  const rowHover = light ? '#f9fafb' : 'rgba(255,255,255,0.03)';
+  const t = tokens(light);
+  const { card, border, thead, text1, text2, accent, hover: rowHover } = t;
 
   const { data: reservations = [], isLoading } = useQuery({
-    queryKey: ['reservations'],
+    queryKey: QUERY_KEYS.RESERVATIONS,
     queryFn: transactionService.getHistory,
   });
 
   const cancelMutation = useMutation({
     mutationFn: transactionService.cancel,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.RESERVATIONS });
       setCancelTarget(null);
     },
   });

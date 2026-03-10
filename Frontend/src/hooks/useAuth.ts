@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { authService } from '../services/authService';
 import { toast } from '../components/Toast';
+import { ROUTES } from '../lib/constants';
 import type { LoginPayload, RegisterPayload } from '../types';
 
 export function useAuth() {
@@ -10,9 +11,7 @@ export function useAuth() {
 
   const login = async (payload: LoginPayload) => {
     const { token } = await authService.login(payload);
-    // Store token first so the next request is authenticated
     localStorage.setItem('token', token);
-    // Fetch full profile including saldo
     const fullUser = await authService.getMe();
     setAuth(token, fullUser);
     toast.success(`Bem-vindo de volta, ${fullUser.nome_completo?.split(' ')[0] ?? 'utilizador'}!`);

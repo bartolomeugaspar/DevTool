@@ -2,25 +2,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { serviceService } from '../services/serviceService';
 import ServiceCard from '../components/ServiceCard';
 import { useThemeStore } from '../store/themeStore';
+import { tokens } from '../lib/theme';
+import { QUERY_KEYS } from '../lib/constants';
 
 export default function Services() {
   const queryClient = useQueryClient();
   const { theme } = useThemeStore();
-  const light = theme === 'light';
-
-  const text1  = light ? '#0c2340' : '#ffffff';
-  const text2  = light ? '#586779' : '#8e9bab';
-  const accent = light ? '#002f7a' : '#31ECC6';
+  const t = tokens(theme === 'light');
+  const { text1, text2, accent } = t;
 
   const { data: services = [], isLoading, isError } = useQuery({
-    queryKey: ['services'],
+    queryKey: QUERY_KEYS.SERVICES,
     queryFn: serviceService.getAll,
   });
 
   const deleteMutation = useMutation({
     mutationFn: serviceService.remove,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['services'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SERVICES });
     },
   });
 
