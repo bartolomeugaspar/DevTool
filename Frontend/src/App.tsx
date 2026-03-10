@@ -11,6 +11,7 @@ import Transactions from './pages/Transactions';
 import HireService from './pages/HireService';
 import NotFound from './pages/NotFound';
 import { useAuthStore } from './store/authStore';
+import { useThemeStore } from './store/themeStore';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,8 +23,11 @@ const queryClient = new QueryClient({
 });
 
 function Layout({ children }: { children: React.ReactNode }) {
+  const { theme } = useThemeStore();
+  const light = theme === 'light';
   return (
-    <div className="min-h-screen bg-gray-950">
+    <div className="min-h-screen transition-colors duration-300"
+      style={{ background: light ? '#f3f4f6f6' : '#042f5cff' }}>
       <Navbar />
       <main>{children}</main>
     </div>
