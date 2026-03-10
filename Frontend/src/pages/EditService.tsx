@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { serviceService } from '../services/serviceService';
 import { useTheme } from '../hooks/useTheme';
+import { toast } from '../components/Toast';
 import { QUERY_KEYS, ROUTES } from '../lib/constants';
 
 const schema = z.object({
@@ -46,6 +47,7 @@ export default function EditService() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SERVICES });
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SERVICE(id!) });
+      toast.success('Serviço atualizado com sucesso!');
       navigate(ROUTES.SERVICES);
     },
     onError: (err: unknown) => {

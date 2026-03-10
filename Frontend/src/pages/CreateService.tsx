@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { serviceService } from '../services/serviceService';
 import { useTheme } from '../hooks/useTheme';
+import { toast } from '../components/Toast';
 import { QUERY_KEYS, ROUTES } from '../lib/constants';
 
 const schema = z.object({
@@ -33,6 +34,7 @@ export default function CreateService() {
     mutationFn: serviceService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.SERVICES });
+      toast.success('Serviço criado com sucesso!');
       navigate(ROUTES.SERVICES);
     },
     onError: (err: unknown) => {
