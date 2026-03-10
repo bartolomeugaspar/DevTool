@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { useThemeStore } from '../store/themeStore';
 import { toast } from './Toast';
 
 const BulirLogo = () => (
@@ -15,11 +16,23 @@ const BulirLogo = () => (
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
+  const { theme, toggle: toggleTheme } = useThemeStore();
+  const light = theme === 'light';
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  // ── theme tokens ────────────────────────────────────────────────────────
+  const navBg     = light ? '#ffffff'              : '#0052aaff';
+  const navBorder = light ? '#e5e7eb'              : '#0052aaff';
+  const dropBg    = light ? '#ffffff'              : '#0e1e35';
+  const text1     = light ? '#0c2340'              : '#ffffff';
+  const text2     = light ? '#586779'              : '#8e9bab';
+  const hoverBg   = light ? '#f3f4f6'              : 'rgba(255,255,255,0.05)';
+  const accent    = light ? '#0052aaff'              : '#31ECC6';
+  const accentBg  = light ? 'rgba(0,122,255,0.10)' : 'rgba(49,236,198,0.18)';
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -51,14 +64,16 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="border-b sticky top-0 z-50" style={{ background: '#0c2340', borderColor: '#1a3557' }}>
+    <nav className="border-b sticky top-0 z-50 transition-colors duration-300"
+      style={{ background: navBg, borderColor: navBorder }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
             <BulirLogo />
-            <span className="text-base font-bold text-white group-hover:opacity-80 transition-opacity hidden sm:block">Bulir</span>
+            <span className="text-base font-bold group-hover:opacity-80 transition-opacity hidden sm:block"
+              style={{ color: text1 }}>Bulir</span>
           </Link>
 
           {/* Desktop nav links */}
@@ -69,13 +84,13 @@ export default function Navbar() {
                 to={to}
                 className="relative px-3 py-2 rounded-lg text-sm font-medium transition-all"
                 style={{
-                  color: isActive(to) ? '#31ECC6' : '#8e9bab',
-                  background: isActive(to) ? 'rgba(49,236,198,0.08)' : 'transparent',
+                  color: isActive(to) ? accent : text2,
+                  background: isActive(to) ? `${accent}14` : 'transparent',
                 }}
               >
                 {label}
                 {isActive(to) && (
-                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full" style={{ background: '#31ECC6' }} />
+                  <span className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full" style={{ background: accent }} />
                 )}
               </Link>
             ))}
@@ -85,16 +100,20 @@ export default function Navbar() {
           <div className="hidden md:flex items-center" ref={profileRef}>
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all hover:bg-white/5"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all"
+              style={{ background: profileOpen ? hoverBg : 'transparent' }}
+              onMouseEnter={e => (e.currentTarget.style.background = hoverBg)}
+              onMouseLeave={e => (e.currentTarget.style.background = profileOpen ? hoverBg : 'transparent')}
             >
               {/* Avatar */}
-              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                style={{ background: accentBg, color: accent }}>
                 {initials}
               </div>
               {/* Chevron */}
               <svg
                 className="w-3.5 h-3.5 transition-transform"
-                style={{ color: '#586779', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                style={{ color: text2, transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
                 fill="none" viewBox="0 0 24 24" stroke="currentColor"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -104,33 +123,67 @@ export default function Navbar() {
             {/* Dropdown */}
             {profileOpen && (
               <div
-                className="absolute right-4 top-14 w-60 rounded-2xl shadow-2xl overflow-hidden z-50"
-                style={{ background: '#0e1e35', border: '1px solid #1a3557' }}
+                className="absolute right-4 top-14 w-64 rounded-2xl shadow-2xl overflow-hidden z-50"
+                style={{ background: dropBg, border: `1px solid ${navBorder}` }}
               >
                 {/* Profile header */}
-                <div className="px-4 py-4" style={{ borderBottom: '1px solid #1a3557' }}>
+                <div className="px-4 py-4" style={{ borderBottom: `1px solid ${navBorder}` }}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                      style={{ background: accentBg, color: accent }}>
                       {initials}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{user?.nome_completo ?? 'Utilizador'}</p>
-                      <p className="text-xs truncate" style={{ color: '#586779' }}>{user?.email}</p>
+                      <p className="text-sm font-semibold truncate" style={{ color: text1 }}>{user?.nome_completo ?? 'Utilizador'}</p>
+                      <p className="text-xs truncate" style={{ color: text2 }}>{user?.email}</p>
                     </div>
                   </div>
                   <div className="mt-3">
-                    <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide" style={{ background: 'rgba(49,236,198,0.10)', color: '#31ECC6' }}>
+                    <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide"
+                      style={{ background: accentBg, color: accent }}>
                       {user?.tipo_usuario}
                     </span>
                   </div>
+                </div>
+
+                {/* Theme toggle */}
+                <div className="px-2 pt-2" style={{ borderBottom: `1px solid ${navBorder}` }}>
+                  <button
+                    onClick={toggleTheme}
+                    className="flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all mb-2"
+                    style={{ color: text1 }}
+                    onMouseEnter={e => (e.currentTarget.style.background = hoverBg)}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      {light ? (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#eab308" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#eab308" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      )}
+                      <span>{light ? 'Modo escuro' : 'Modo claro'}</span>
+                    </div>
+                    {/* Toggle pill */}
+                    <div className="relative w-9 h-5 rounded-full transition-colors flex-shrink-0"
+                      style={{ background: light ? '#0c2340' : '#31ECC6' }}>
+                      <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
+                        style={{ left: light ? '0.125rem' : '1.125rem' }} />
+                    </div>
+                  </button>
                 </div>
 
                 {/* Logout */}
                 <div className="px-2 py-2">
                   <button
                     onClick={handleLogout}
-                    className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-red-500/10"
+                    className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                     style={{ color: '#f87171' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(248,113,113,0.08)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -144,13 +197,14 @@ export default function Navbar() {
 
           {/* Mobile: avatar + hamburger */}
           <div className="flex md:hidden items-center gap-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+              style={{ background: accentBg, color: accent }}>
               {initials}
             </div>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="p-1.5 rounded-lg transition-colors"
-              style={{ color: '#8e9bab' }}
+              style={{ color: text2 }}
             >
               {menuOpen ? (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,24 +221,26 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden border-t pb-4 pt-2" style={{ borderColor: '#1a3557' }}>
+          <div className="md:hidden border-t pb-4 pt-2" style={{ borderColor: navBorder }}>
             {/* User info */}
             <div className="flex items-center gap-3 px-2 py-3 mb-2">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
+                style={{ background: accentBg, color: accent }}>
                 {initials}
               </div>
               <div>
-                <p className="text-sm font-semibold text-white">{user?.nome_completo ?? 'Utilizador'}</p>
-                <p className="text-xs" style={{ color: '#586779' }}>{user?.email}</p>
+                <p className="text-sm font-semibold" style={{ color: text1 }}>{user?.nome_completo ?? 'Utilizador'}</p>
+                <p className="text-xs" style={{ color: text2 }}>{user?.email}</p>
               </div>
               {user?.tipo_usuario && (
-                <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold uppercase" style={{ background: 'rgba(49,236,198,0.10)', color: '#31ECC6' }}>
+                <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-semibold uppercase"
+                  style={{ background: accentBg, color: accent }}>
                   {user.tipo_usuario}
                 </span>
               )}
             </div>
 
-            <div className="h-px mb-2" style={{ background: '#1a3557' }} />
+            <div className="h-px mb-2" style={{ background: navBorder }} />
 
             {/* Links */}
             {navLinks.map(({ to, label }) => (
@@ -194,15 +250,42 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center gap-2 px-3 py-2.5 rounded-lg mx-1 text-sm font-medium transition-all"
                 style={{
-                  color: isActive(to) ? '#31ECC6' : '#8e9bab',
-                  background: isActive(to) ? 'rgba(49,236,198,0.08)' : 'transparent',
+                  color: isActive(to) ? accent : text2,
+                  background: isActive(to) ? `${accent}14` : 'transparent',
                 }}
               >
                 {label}
               </Link>
             ))}
 
-            <div className="h-px my-2" style={{ background: '#1a3557' }} />
+            <div className="h-px my-2" style={{ background: navBorder }} />
+
+            {/* Theme toggle mobile */}
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-between px-3 py-2.5 rounded-lg mx-1 text-sm font-medium transition-all hover:opacity-80"
+              style={{ color: text1, width: 'calc(100% - 0.5rem)' }}
+            >
+              <div className="flex items-center gap-2">
+                {light ? (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#eab308" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="#eab308" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                )}
+                {light ? 'Modo escuro' : 'Modo claro'}
+              </div>
+              <div className="relative w-9 h-5 rounded-full flex-shrink-0"
+                style={{ background: light ? '#0c2340' : '#31ECC6' }}>
+                <span className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all"
+                  style={{ left: light ? '0.125rem' : '1.125rem' }} />
+              </div>
+            </button>
+
+            <div className="h-px my-2" style={{ background: navBorder }} />
 
             {/* Logout mobile */}
             <button
