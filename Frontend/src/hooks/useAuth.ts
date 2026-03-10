@@ -9,19 +9,11 @@ export function useAuth() {
 
   const login = async (payload: LoginPayload) => {
     const { token } = await authService.login(payload);
-    // Decode JWT to get user info
-    const base64Payload = token.split('.')[1];
-    const decoded = JSON.parse(atob(base64Payload));
-    // Store minimal user info from token; full profile loaded on demand
-    setAuth(token, {
-      id: decoded.id,
-      nome_completo: '',
-      nif: '',
-      email: payload.email,
-      tipo_usuario: decoded.tipo,
-      saldo: 0,
-      created_at: '',
-    });
+    // Store token first so the next request is authenticated
+    localStorage.setItem('token', token);
+    // Fetch full profile including saldo
+    const fullUser = await authService.getMe();
+    setAuth(token, fullUser);
     navigate('/dashboard');
   };
 

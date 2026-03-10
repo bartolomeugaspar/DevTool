@@ -3,11 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
+import { authService } from '../services/authService';
+import { useAuthStore } from '../store/authStore';
 
 export default function HireService() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { token, setAuth } = useAuthStore();
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -19,8 +22,13 @@ export default function HireService() {
 
   const hireMutation = useMutation({
     mutationFn: transactionService.hire,
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      // Refresh user profile to update saldo
+      if (token) {
+        const updatedUser = await authService.getMe();
+        setAuth(token, updatedUser);
+      }
       setSuccess(true);
     },
     onError: (err: unknown) => {
