@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/', (req, res) => {
-  res.json({ message: 'Backend-DevTool API is running 🚀' });
+  res.json({ message: 'Backend-Bulir API is running 🚀' });
 });
 
 // Routes
