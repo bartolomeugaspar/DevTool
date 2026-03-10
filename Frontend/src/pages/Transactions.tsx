@@ -92,7 +92,7 @@ export default function Transactions() {
                     <td className="px-6 py-4" style={{ color: text2 }}>
                       {user?.tipo_usuario === 'prestador'
                         ? (res.users?.nome_completo ?? res.users?.email ?? '—')
-                        : (res.services?.prestador_id ? '—' : '—')}
+                        : (res.services?.users?.nome_completo ?? '—')}
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
