@@ -40,7 +40,7 @@ async function getServiceById(req, res) {
 
 async function deleteService(req, res) {
   const { id } = req.params;
-  
+
   const { data: service, error: fetchError } = await supabase
     .from('services')
     .select('*')
@@ -52,6 +52,12 @@ async function deleteService(req, res) {
   if (service.prestador_id !== req.user.id) {
     return res.status(403).json({ error: 'Apenas o prestador dono do serviço pode removê-lo' });
   }
+
+  // Dissociar reservas ligadas para evitar violação FK
+  await supabase
+    .from('reservations')
+    .update({ servico_id: null })
+    .eq('servico_id', id);
 
   const { error } = await supabase
     .from('services')

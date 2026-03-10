@@ -9,7 +9,9 @@ async function register(req, res) {
 
   const { data, error } = await supabase
     .from('users')
-    .insert([{ nome_completo, nif, email, senha: hash, tipo_usuario }]);
+    .insert([{ nome_completo, nif, email, senha: hash, tipo_usuario }])
+    .select('id, nome_completo, nif, email, tipo_usuario, created_at')
+    .single();
 
   if (error) return res.status(400).json(error);
 
