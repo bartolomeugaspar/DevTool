@@ -46,6 +46,6 @@
 .animate-float        { animation: float-y 3.5s ease-in-out infinite; }
 .animate-float-slow   { animation: float-y-slow 5s ease-in-out infinite; }
 .animate-float-inv    { animation: float-y-slow-inv 4.2s ease-in-out infinite; }
-.animate-spin-slow    { animation: spin-slow 18s linear infinite; }
+.animate-spin-slow    { animation: spin-slow 12s linear infinite; }
 .animate-spin-reverse { animation: spin-reverse 12s linear infinite; }
 .animate-drift        { animation: drift 7s ease-in-out infinite; }
