@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { toast } from './Toast';
 
 const BulirLogo = () => (
   <svg className="w-8 h-8 flex-shrink-0" fill="none" viewBox="0 0 46 46">
@@ -32,6 +33,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
+    toast.info('Sessão terminada. Até breve!');
     navigate('/login');
   };
 
