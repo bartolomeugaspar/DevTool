@@ -142,7 +142,7 @@ export default function Login() {
     return (
         <div className="min-h-screen flex">
             {/* Left Panel */}
-            <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-14 relative overflow-hidden"
+            <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-14 relative overflow-hidden min-h-screen"
                 style={{ background: 'linear-gradient(135deg, #061628 0%, #0c2340 50%, #0e2d52 100%)' }}>
 
                 {/* Background blobs */}
@@ -205,8 +205,8 @@ export default function Login() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: '#060f1c' }}>
-                <div className="w-full max-w-sm">
+            <div className="w-full lg:w-1/2 flex items-start lg:items-center justify-center px-6 py-10 sm:px-10 lg:p-8 min-h-screen overflow-y-auto" style={{ background: '#060f1c' }}>
+                <div className="w-full max-w-sm mx-auto">
                     {/* Mobile logo */}
                     <div className="lg:hidden flex justify-center mb-8">
                         <svg className="w-10 h-10" fill="none" viewBox="0 0 46 46">
@@ -223,7 +223,7 @@ export default function Login() {
                         <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: '#31ECC6' }}>
                             {isRegister ? 'Novo utilizador' : 'Bem-vindo de volta'}
                         </p>
-                        <h2 className="text-3xl font-extrabold tracking-tight text-white">
+                        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
                             {isRegister ? 'Criar conta' : 'Faça seu Login'}
                         </h2>
                         <p className="mt-2 text-sm font-normal" style={{ color: '#8e9bab' }}>
@@ -325,7 +325,7 @@ export default function Login() {
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>NIF</label>
                                     <input
@@ -342,16 +342,23 @@ export default function Login() {
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Tipo</label>
-                                    <select
-                                        {...registerForm.register('tipo_usuario')}
-                                        className="w-full px-4 py-3 rounded-xl text-sm font-medium text-white outline-none transition-all appearance-none"
-                                        style={{ background: '#0c2340', border: '1px solid #304259' }}
-                                        onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
-                                        onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
-                                    >
-                                        <option value="cliente">Cliente</option>
-                                        <option value="prestador">Prestador</option>
-                                    </select>
+                                    <div className="relative">
+                                        <select
+                                            {...registerForm.register('tipo_usuario')}
+                                            className="w-full px-4 py-3 pr-9 rounded-xl text-sm font-medium text-white outline-none transition-all appearance-none"
+                                            style={{ background: '#0c2340', border: '1px solid #304259' }}
+                                            onFocus={e => { e.currentTarget.style.borderColor = '#31ECC6'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(49,236,198,0.12)'; }}
+                                            onBlur={e => { e.currentTarget.style.borderColor = '#304259'; e.currentTarget.style.boxShadow = 'none'; }}
+                                        >
+                                            <option value="cliente" style={{ background: '#0c2340' }}>Cliente</option>
+                                            <option value="prestador" style={{ background: '#0c2340' }}>Prestador</option>
+                                        </select>
+                                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#8e9bab' }}>
+                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
 
