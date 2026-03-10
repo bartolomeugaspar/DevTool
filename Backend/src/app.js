@@ -11,11 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/', (req, res) => {
-  res.json({ message: 'DevTool API is running 🚀' });
+  res.json({ message: 'Backend-DevTool API is running 🚀' });
 });
 
 // Routes
-// app.use('/api/auth', require('./routes/auth'));
+app.use('/api', require('./routes/routes'));
 
 const PORT = process.env.PORT || 3000;
 
