@@ -1,0 +1,110 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Services from './pages/Services';
+import CreateService from './pages/CreateService';
+import Transactions from './pages/Transactions';
+import HireService from './pages/HireService';
+import { useAuthStore } from './store/authStore';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 30_000,
+    },
+  },
+});
+
+function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-gray-950">
+      <Navbar />
+      <main>{children}</main>
+    </div>
+  );
+}
+
+function AppRoutes() {
+  const { token } = useAuthStore();
+
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={token ? <Navigate to="/dashboard" replace /> : <Login />}
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Dashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/services"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Services />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/services/create"
+        element={
+          <ProtectedRoute allowedRoles={['prestador']}>
+            <Layout>
+              <CreateService />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/services/:id/hire"
+        element={
+          <ProtectedRoute allowedRoles={['cliente']}>
+            <Layout>
+              <HireService />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/transactions"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Transactions />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+}
