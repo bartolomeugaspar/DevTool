@@ -14,6 +14,11 @@ async function createReservation(req, res) {
     return res.status(404).json({ error: 'Serviço não encontrado' });
   }
 
+  // Impedir que o prestador contrate o seu próprio serviço
+  if (service.prestador_id === req.user.id) {
+    return res.status(400).json({ error: 'Não podes contratar o teu próprio serviço' });
+  }
+
   // Buscar cliente
   const { data: cliente, error: clienteError } = await supabase
     .from('users')
