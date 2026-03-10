@@ -1,15 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { serviceService } from '../services/serviceService';
 import ServiceCard from '../components/ServiceCard';
-import { useThemeStore } from '../store/themeStore';
-import { tokens } from '../lib/theme';
+import { useTheme } from '../hooks/useTheme';
 import { QUERY_KEYS } from '../lib/constants';
 
 export default function Services() {
   const queryClient = useQueryClient();
-  const { theme } = useThemeStore();
-  const t = tokens(theme === 'light');
-  const { text1, text2, accent } = t;
+  const { text1, text2, accent } = useTheme();
 
   const { data: services = [], isLoading, isError } = useQuery({
     queryKey: QUERY_KEYS.SERVICES,

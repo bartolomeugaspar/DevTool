@@ -1,5 +1,5 @@
 import Navbar from './Navbar';
-import { useThemeStore } from '../store/themeStore';
+import { useTheme } from '../hooks/useTheme';
 import type { ReactNode } from 'react';
 
 interface LayoutProps {
@@ -7,13 +7,11 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { theme } = useThemeStore();
-  const light = theme === 'light';
-
+  const { pageBg } = useTheme();
   return (
     <div
       className="min-h-screen transition-colors duration-300"
-      style={{ background: light ? '#f3f4f6' : '#07111e' }}
+      style={{ background: pageBg }}
     >
       <Navbar />
       <main>{children}</main>

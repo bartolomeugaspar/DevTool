@@ -1,10 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { useThemeStore } from '../store/themeStore';
+import { useTheme } from '../hooks/useTheme';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
-import { tokens } from '../lib/theme';
 import { STATUS_STYLES, QUERY_KEYS, ROUTES } from '../lib/constants';
 import type { Reservation } from '../types';
 
@@ -42,8 +41,7 @@ function timeAgo(dateStr: string) {
 
 export default function Dashboard() {
   const { user } = useAuthStore();
-  const { theme } = useThemeStore();
-  const light = theme === 'light';
+  const { light, card, border, text1, text2, skelBg, hover, accent, accentBg } = useTheme();
 
   const isPrestador = user?.tipo_usuario === 'prestador';
   const firstName = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
@@ -68,9 +66,6 @@ export default function Dashboard() {
 
   const concluded = reservations.filter(r => r.status === 'concluido').length;
   const pending   = reservations.filter(r => r.status === 'pendente').length;
-
-  // ── theme tokens ──────────────────────────────────────────────────────────
-  const { card, border, text1, text2, skelBg, hover, accent, accentBg } = tokens(light);
 
   const Skel = ({ w = '6rem', h = '1.75rem' }: { w?: string; h?: string }) => (
     <div className="rounded-lg animate-pulse" style={{ width: w, height: h, background: skelBg }} />

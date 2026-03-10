@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '../services/transactionService';
 import { useAuthStore } from '../store/authStore';
-import { useThemeStore } from '../store/themeStore';
-import { tokens } from '../lib/theme';
+import { useTheme } from '../hooks/useTheme';
 import { STATUS_STYLES, QUERY_KEYS } from '../lib/constants';
 import type { Reservation } from '../types';
 import CancelModal from '../components/CancelModal';
@@ -12,13 +11,10 @@ import CancelModal from '../components/CancelModal';
 export default function Transactions() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
-  const { theme } = useThemeStore();
-  const light = theme === 'light';
 
   const [cancelTarget, setCancelTarget] = useState<Reservation | null>(null);
 
-  const t = tokens(light);
-  const { card, border, thead, text1, text2, accent, hover: rowHover } = t;
+  const { card, border, thead, text1, text2, accent, hover: rowHover } = useTheme();
 
   const { data: reservations = [], isLoading } = useQuery({
     queryKey: QUERY_KEYS.RESERVATIONS,

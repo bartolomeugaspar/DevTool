@@ -1,4 +1,4 @@
-import { useThemeStore } from '../store/themeStore';
+import { useTheme } from '../hooks/useTheme';
 import type { Reservation } from '../types';
 
 export interface CancelModalProps {
@@ -14,13 +14,7 @@ export default function CancelModal({
   onClose,
   isPending = false,
 }: CancelModalProps) {
-  const { theme } = useThemeStore();
-  const light = theme === 'light';
-
-  const card    = light ? '#ffffff' : '#0e1e35';
-  const border  = light ? '#e5e7eb' : '#1a3557';
-  const text1   = light ? '#0c2340' : '#ffffff';
-  const text2   = light ? '#586779' : '#8e9bab';
+  const { light, card, border, text1, text2 } = useTheme();
   const infoRow = light ? '#f9fafb' : '#0c2340';
 
   return (

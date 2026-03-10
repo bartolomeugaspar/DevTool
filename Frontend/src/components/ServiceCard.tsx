@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Service } from '../types';
 import { useAuthStore } from '../store/authStore';
-import { useThemeStore } from '../store/themeStore';
-import { tokens } from '../lib/theme';
+import { useTheme } from '../hooks/useTheme';
 import { ROUTES } from '../lib/constants';
 
 interface ServiceCardProps {
@@ -12,13 +11,11 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ service, onDelete }: ServiceCardProps) {
   const { user } = useAuthStore();
-  const { theme } = useThemeStore();
-  const t = tokens(theme === 'light');
+  const { theme, card, border, text1, text2, text3, accent } = useTheme();
 
   const isOwner   = user?.id === service.prestador_id;
   const isCliente = user?.tipo_usuario === 'cliente';
 
-  const { card, border, text1, text2, text3, accent } = t;
   const accentBg    = theme === 'light' ? 'rgba(0,47,122,0.08)'  : 'rgba(49,236,198,0.08)';
   const hoverBorder = theme === 'light' ? '#002f7a66'            : '#31ECC666';
 

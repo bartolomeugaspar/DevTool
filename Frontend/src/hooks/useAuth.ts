@@ -11,23 +11,24 @@ export function useAuth() {
 
   const login = async (payload: LoginPayload) => {
     const { token } = await authService.login(payload);
-    localStorage.setItem('token', token);
+    // Set a temporary user so the api interceptor can read the token before getMe()
+    setAuth(token, { id: '', nome_completo: '', nif: '', email: payload.email, tipo_usuario: 'cliente', saldo: 0, created_at: '' });
     const fullUser = await authService.getMe();
     setAuth(token, fullUser);
     toast.success(`Bem-vindo de volta, ${fullUser.nome_completo?.split(' ')[0] ?? 'utilizador'}!`);
-    navigate('/dashboard');
+    navigate(ROUTES.DASHBOARD);
   };
 
   const register = async (payload: RegisterPayload) => {
     await authService.register(payload);
     toast.success('Conta criada com sucesso! Podes entrar agora.');
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   const logoutUser = () => {
     logout();
     toast.info('Sessão terminada. Até breve!');
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   return {

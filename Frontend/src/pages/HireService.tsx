@@ -5,8 +5,7 @@ import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
-import { useThemeStore } from '../store/themeStore';
-import { tokens } from '../lib/theme';
+import { useTheme } from '../hooks/useTheme';
 import { QUERY_KEYS, ROUTES } from '../lib/constants';
 
 export default function HireService() {
@@ -14,12 +13,9 @@ export default function HireService() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { token, setAuth } = useAuthStore();
-  const { theme } = useThemeStore();
-  const light = theme === 'light';
+  const { light, card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText, theme } = useTheme();
   const [serverError, setServerError] = useState('');
   const [success, setSuccess] = useState(false);
-
-  const { card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText } = tokens(light);
 
   const { data: service, isLoading } = useQuery({
     queryKey: QUERY_KEYS.SERVICE(id!),
