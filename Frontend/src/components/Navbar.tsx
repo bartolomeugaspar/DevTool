@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
@@ -17,6 +17,18 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -67,43 +79,70 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right side: user info + logout */}
-          <div className="hidden md:flex items-center gap-3">
-            {/* Badge tipo */}
-            {user?.tipo_usuario && (
-              <span className="px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide" style={{ background: 'rgba(49,236,198,0.10)', color: '#31ECC6' }}>
-                {user.tipo_usuario}
-              </span>
-            )}
-
-            {/* Divider */}
-            <div className="w-px h-6" style={{ background: '#1a3557' }} />
-
-            {/* Avatar + name */}
-            <div className="flex items-center gap-2.5">
+          {/* Right side: profile dropdown */}
+          <div className="hidden md:flex items-center" ref={profileRef}>
+            <button
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="flex items-center gap-2.5 px-2 py-1.5 rounded-xl transition-all hover:bg-white/5"
+            >
+              {/* Avatar */}
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
                 {initials}
               </div>
-              <div className="flex flex-col leading-tight">
+              {/* Name + role */}
+              <div className="flex flex-col leading-tight text-left">
                 <span className="text-sm font-semibold text-white">{user?.nome_completo?.split(' ')[0] ?? 'Utilizador'}</span>
-                <span className="text-xs" style={{ color: '#586779' }}>{user?.email}</span>
+                <span className="text-xs font-medium" style={{ color: '#31ECC6' }}>{user?.tipo_usuario}</span>
               </div>
-            </div>
-
-            {/* Divider */}
-            <div className="w-px h-6" style={{ background: '#1a3557' }} />
-
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg transition-all hover:opacity-80"
-              style={{ background: 'rgba(239,68,68,0.12)', color: '#f87171', border: '1px solid rgba(239,68,68,0.20)' }}
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              {/* Chevron */}
+              <svg
+                className="w-3.5 h-3.5 transition-transform"
+                style={{ color: '#586779', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                fill="none" viewBox="0 0 24 24" stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
               </svg>
-              Sair
             </button>
+
+            {/* Dropdown */}
+            {profileOpen && (
+              <div
+                className="absolute right-4 top-14 w-60 rounded-2xl shadow-2xl overflow-hidden z-50"
+                style={{ background: '#0e1e35', border: '1px solid #1a3557' }}
+              >
+                {/* Profile header */}
+                <div className="px-4 py-4" style={{ borderBottom: '1px solid #1a3557' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0" style={{ background: 'rgba(49,236,198,0.18)', color: '#31ECC6' }}>
+                      {initials}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-white truncate">{user?.nome_completo ?? 'Utilizador'}</p>
+                      <p className="text-xs truncate" style={{ color: '#586779' }}>{user?.email}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wide" style={{ background: 'rgba(49,236,198,0.10)', color: '#31ECC6' }}>
+                      {user?.tipo_usuario}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Logout */}
+                <div className="px-2 py-2">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-red-500/10"
+                    style={{ color: '#f87171' }}
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Terminar sessão
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Mobile: avatar + hamburger */}
