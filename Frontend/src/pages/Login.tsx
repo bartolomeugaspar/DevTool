@@ -205,8 +205,8 @@ export default function Login() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-10 sm:px-10 lg:p-8 min-h-screen overflow-y-auto" style={{ background: '#060f1c' }}>
-                <div className="w-full max-w-sm mx-auto my-auto">
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-10 lg:p-8 min-h-screen" style={{ background: '#060f1c' }}>
+                <div className="w-full max-w-sm">
                     {/* Mobile logo */}
                     <div className="lg:hidden flex justify-center mb-8">
                         <svg className="w-10 h-10" fill="none" viewBox="0 0 46 46">
