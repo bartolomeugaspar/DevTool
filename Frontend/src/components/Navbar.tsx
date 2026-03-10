@@ -31,8 +31,8 @@ export default function Navbar() {
   const text1     = light ? '#0c2340'              : '#ffffff';
   const text2     = light ? '#586779'              : '#8e9bab';
   const hoverBg   = light ? '#f3f4f6'              : 'rgba(255,255,255,0.05)';
-  const accent    = light ? '#0055cc'              : '#31ECC6';
-  const accentBg  = light ? 'rgba(0,85,204,0.10)' : 'rgba(49,236,198,0.18)';
+  const accent    = light ? '#002f7a'              : '#31ECC6';
+  const accentBg  = light ? 'rgba(0,47,122,0.10)' : 'rgba(49,236,198,0.18)';
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
