@@ -24,7 +24,7 @@ export interface Reservation {
   status: 'pendente' | 'concluido' | 'cancelado';
   created_at: string;
   services?: Service;
-  users?: User;
+  users?: Pick<User, 'id' | 'nome_completo' | 'email' | 'nif'>;
 }
 
 export interface AuthResponse {
@@ -32,7 +32,8 @@ export interface AuthResponse {
 }
 
 export interface LoginPayload {
-  email: string;
+  email?: string;
+  nif?: string;
   senha: string;
 }
 
@@ -48,6 +49,12 @@ export interface CreateServicePayload {
   nome: string;
   descricao: string;
   preco: number;
+}
+
+export interface UpdateServicePayload {
+  nome?: string;
+  descricao?: string;
+  preco?: number;
 }
 
 export interface CreateReservationPayload {
