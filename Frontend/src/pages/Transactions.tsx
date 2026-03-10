@@ -44,8 +44,8 @@ export default function Transactions() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold mb-8" style={{ color: text1 }}>Histórico de Transações</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Histórico de Transações</h1>
 
       {reservations.length === 0 ? (
         <div className="text-center py-20" style={{ color: text2 }}>
@@ -53,7 +53,8 @@ export default function Transactions() {
         </div>
       ) : (
         <div className="rounded-2xl overflow-hidden" style={{ background: card, border: `1px solid ${border}` }}>
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[520px]">
             <thead style={{ background: thead }}>
               <tr>
                 {['Serviço', 'Preço', 'Status', 'Data', ...(user?.tipo_usuario === 'cliente' ? ['Ação'] : [])].map(h => (
@@ -109,6 +110,7 @@ export default function Transactions() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

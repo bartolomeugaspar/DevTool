@@ -59,7 +59,7 @@ export default function HireService() {
 
   if (!service) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-10">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         <p className="text-red-400">Serviço não encontrado.</p>
       </div>
     );
@@ -67,7 +67,7 @@ export default function HireService() {
 
   if (success) {
     return (
-      <div className="max-w-lg mx-auto px-6 py-20 flex flex-col items-center text-center">
+      <div className="max-w-lg mx-auto px-4 sm:px-6 py-10 sm:py-20 flex flex-col items-center text-center">
         {/* Icon */}
         <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(49,236,198,0.12)' }}>
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#31ECC6" strokeWidth={1.8}>
@@ -132,10 +132,10 @@ export default function HireService() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold mb-8" style={{ color: text1 }}>Contratar Serviço</h1>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Contratar Serviço</h1>
 
-      <div className="rounded-2xl p-8" style={{ background: card, border: `1px solid ${border}` }}>
+      <div className="rounded-2xl p-5 sm:p-8" style={{ background: card, border: `1px solid ${border}` }}>
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-2" style={{ color: text1 }}>{service.nome}</h2>
           <p className="text-sm mb-4" style={{ color: text2 }}>{service.descricao}</p>

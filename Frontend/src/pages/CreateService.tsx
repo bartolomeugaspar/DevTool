@@ -60,8 +60,8 @@ export default function CreateService() {
   const inputStyle = { background: inputBg, border: `1px solid ${inputBorder}`, color: text1 };
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold mb-8" style={{ color: text1 }}>Criar Serviço</h1>
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Criar Serviço</h1>
 
       {serverError && (
         <div className="mb-4 bg-red-900/50 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm">
@@ -69,7 +69,7 @@ export default function CreateService() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="rounded-2xl p-8 space-y-5"
+      <form onSubmit={handleSubmit(onSubmit)} className="rounded-2xl p-5 sm:p-8 space-y-5"
         style={{ background: card, border: `1px solid ${border}` }}>
         <div>
           <label className="block text-sm mb-1" style={{ color: text2 }}>Nome do Serviço</label>

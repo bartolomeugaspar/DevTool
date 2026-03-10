@@ -131,7 +131,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
 
         {/* ── Hero header ─────────────────────────────────────────────────── */}
-        <div className="rounded-2xl px-6 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5"
+        <div className="rounded-2xl px-4 sm:px-6 py-5 sm:py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5"
           style={{ background: card, border: `1px solid ${border}` }}>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold flex-shrink-0"
@@ -162,7 +162,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Stat row ────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {stats.map(({ label, value, sub, accent, path }) => (
             <div key={label} className="rounded-2xl p-5 flex flex-col gap-3"
               style={{ background: card, border: `1px solid ${border}` }}>
@@ -174,7 +174,7 @@ export default function Dashboard() {
               </div>
               {value === null
                 ? <Skel w="4rem" h="2rem" />
-                : <p className="text-2xl font-extrabold tracking-tight" style={{ color: text1 }}>{value}</p>}
+                : <p className="text-xl sm:text-2xl font-extrabold tracking-tight break-all" style={{ color: text1 }}>{value}</p>}
               <p className="text-xs" style={{ color: text2 }}>{sub}</p>
             </div>
           ))}
