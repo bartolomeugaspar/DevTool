@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   ActivityIndicator, StatusBar, Alert, Modal,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -85,6 +86,7 @@ export default function ServicesScreen() {
   const queryClient = useQueryClient();
   const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, inputBorder, skelBg } = useTheme();
   const { user } = useAuthStore();
+  const insets = useSafeAreaInsets();
   const isPrestador = user?.tipo_usuario === 'prestador';
   const [search, setSearch]           = useState('');
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -149,7 +151,7 @@ export default function ServicesScreen() {
         </Modal>
       )}
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 32 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, paddingTop: insets.top + 16, gap: 14 }}>
         {/* Header */}
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View>
