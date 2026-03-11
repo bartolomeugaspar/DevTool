@@ -136,7 +136,7 @@ export default function TransactionsScreen() {
 
         {/* Filter tabs */}
         {!isLoading && reservations.length > 0 && (
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          <View style={{ flexDirection: 'row', gap: 6 }}>
             {FILTER_TABS.map(tab => {
               const active = statusFilter === tab.key;
               const count = tab.key === 'pendente' ? totals.pending : tab.key === 'concluido' ? totals.done : tab.key === 'cancelado' ? totals.cancelled : null;
@@ -145,12 +145,12 @@ export default function TransactionsScreen() {
                   key={tab.key}
                   onPress={() => setStatusFilter(tab.key)}
                   style={{
-                    paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20,
+                    flex: 1, paddingVertical: 7, borderRadius: 10, alignItems: 'center',
                     backgroundColor: active ? accentBg : card,
                     borderWidth: 1, borderColor: active ? accent : border,
                   }}
                 >
-                  <Text style={{ color: active ? accent : text2, fontWeight: '700', fontSize: 12 }}>
+                  <Text style={{ color: active ? accent : text2, fontWeight: '700', fontSize: 11 }} numberOfLines={1}>
                     {tab.label}{count !== null ? ` (${count})` : ''}
                   </Text>
                 </TouchableOpacity>
