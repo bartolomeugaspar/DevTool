@@ -22,7 +22,7 @@ export default function HireServiceScreen() {
   const { id }       = route.params;
   const queryClient  = useQueryClient();
   const { token, setAuth, user } = useAuthStore();
-  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, btnSecBg, btnSecText, btnPrimaryText } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, btnSecBg, btnSecText, btnPrimaryText, headerBg, light } = useTheme();
   const [success, setSuccess] = useState(false);
 
   const { data: service, isLoading } = useQuery({
@@ -144,12 +144,14 @@ export default function HireServiceScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: pageBg }}>
-      <StatusBar barStyle="light-content" backgroundColor={pageBg} />
+      <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={headerBg} />
 
       {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: border }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 4 }}>
-          <Text style={{ color: accent, fontSize: 16 }}>Voltar</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: border }}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 6 }}>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M15 18l-6-6 6-6" />
+          </Svg>
         </TouchableOpacity>
         <Text style={{ color: text1, fontSize: 18, fontWeight: '800' }}>Contratar Serviço</Text>
       </View>
