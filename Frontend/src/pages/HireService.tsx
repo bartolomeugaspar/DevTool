@@ -81,65 +81,69 @@ export default function HireService() {
 
   if (success) {
     return (
-      <div className="max-w-lg mx-auto px-4 sm:px-6 py-10 sm:py-20 flex flex-col items-center text-center">
-        {/* Icon */}
-        <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(49,236,198,0.12)' }}>
-          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#31ECC6" strokeWidth={1.8}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-          </svg>
-        </div>
-
-        {/* Title */}
-        <h2 className="text-2xl font-bold mb-2" style={{ color: text1 }}>Contratação confirmada</h2>
-        <p className="text-sm mb-8 max-w-xs" style={{ color: text2 }}>
-          O serviço <span className="font-medium" style={{ color: text1 }}>{service.nome}</span> foi contratado.
-          O valor de <span className="font-medium" style={{ color: text1 }}>Kz {service.preco.toFixed(2)}</span> foi
-          debitado do seu saldo.
-        </p>
-
-        {/* Summary card */}
-        <div className="w-full rounded-2xl p-5 mb-8 text-left space-y-3"
+      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="rounded-2xl p-6 sm:p-10 flex flex-col items-center text-center"
           style={{ background: card, border: `1px solid ${border}` }}>
-          <div className="flex justify-between text-sm">
-            <span style={{ color: text2 }}>Serviço</span>
-            <span className="font-medium" style={{ color: text1 }}>{service.nome}</span>
-          </div>
-          <div style={{ borderTop: `1px solid ${border}` }} />
-          <div className="flex justify-between text-sm">
-            <span style={{ color: text2 }}>Valor pago</span>
-            <span className="font-semibold" style={{ color: accent }}>Kz {service.preco.toFixed(2)}</span>
-          </div>
-          <div style={{ borderTop: `1px solid ${border}` }} />
-          <div className="flex justify-between text-sm">
-            <span style={{ color: text2 }}>Estado</span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
-              style={{ background: 'rgba(49,236,198,0.12)', color: '#31ECC6' }}>
-              <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
-              Concluído
-            </span>
-          </div>
-        </div>
 
-        {/* Actions */}
-        <div className="flex gap-3 w-full">
-          <button
-            onClick={() => navigate(ROUTES.SERVICES)}
-            className="flex-1 font-medium py-2.5 rounded-xl transition-all text-sm"
-            style={{ background: btnSecBg, color: btnSecText }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-          >
-            Explorar serviços
-          </button>
-          <button
-            onClick={() => navigate(ROUTES.TRANSACTIONS)}
-            className="flex-1 text-white font-medium py-2.5 rounded-xl transition-all text-sm"
-            style={{ background: `linear-gradient(135deg, ${accent} 0%, ${light ? '#002f7a' : '#1ab89e'} 100%)` }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-          >
-            Ver transações
-          </button>
+          {/* Icon */}
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6" style={{ background: 'rgba(49,236,198,0.12)' }}>
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#31ECC6" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-2xl font-bold mb-2" style={{ color: text1 }}>Contratação confirmada</h2>
+          <p className="text-sm mb-8 max-w-xs" style={{ color: text2 }}>
+            O serviço <span className="font-medium" style={{ color: text1 }}>{service.nome}</span> foi contratado.
+            O valor de <span className="font-medium" style={{ color: text1 }}>Kz {service.preco.toFixed(2)}</span> foi
+            debitado do seu saldo.
+          </p>
+
+          {/* Summary card */}
+          <div className="w-full rounded-xl p-4 mb-8 text-left space-y-3"
+            style={{ background: light ? '#f3f4f6' : '#071120', border: `1px solid ${border}` }}>
+            <div className="flex justify-between text-sm">
+              <span style={{ color: text2 }}>Serviço</span>
+              <span className="font-medium" style={{ color: text1 }}>{service.nome}</span>
+            </div>
+            <div style={{ borderTop: `1px solid ${border}` }} />
+            <div className="flex justify-between text-sm">
+              <span style={{ color: text2 }}>Valor pago</span>
+              <span className="font-semibold" style={{ color: accent }}>Kz {service.preco.toFixed(2)}</span>
+            </div>
+            <div style={{ borderTop: `1px solid ${border}` }} />
+            <div className="flex justify-between text-sm">
+              <span style={{ color: text2 }}>Estado</span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full"
+                style={{ background: 'rgba(49,236,198,0.12)', color: '#31ECC6' }}>
+                <span className="w-1.5 h-1.5 rounded-full bg-current inline-block" />
+                Concluído
+              </span>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-3 w-full">
+            <button
+              onClick={() => navigate(ROUTES.SERVICES)}
+              className="flex-1 font-medium py-2.5 rounded-xl transition-all text-sm"
+              style={{ background: btnSecBg, color: btnSecText }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.8')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              Explorar serviços
+            </button>
+            <button
+              onClick={() => navigate(ROUTES.TRANSACTIONS)}
+              className="flex-1 text-white font-medium py-2.5 rounded-xl transition-all text-sm"
+              style={{ background: `linear-gradient(135deg, ${accent} 0%, ${light ? '#002f7a' : '#1ab89e'} 100%)` }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              Ver transações
+            </button>
+          </div>
         </div>
       </div>
     );

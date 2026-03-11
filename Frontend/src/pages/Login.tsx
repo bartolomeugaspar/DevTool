@@ -233,8 +233,7 @@ export default function Login() {
                     <p className="text-indigo-100 text-base leading-relaxed mb-10">
                         Plataforma profissional de serviços e transações entre clientes e prestadores
                     </p>
-
-                    {/* Feature pills — staggered animation */}
+                    
                     <FeaturePills />
                 </div>
 
