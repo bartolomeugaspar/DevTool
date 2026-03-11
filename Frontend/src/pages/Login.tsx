@@ -117,7 +117,10 @@ export default function Login() {
     const { login, register } = useAuth();
 
     const loginForm = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
-    const registerForm = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
+    const registerForm = useForm<RegisterForm>({
+        resolver: zodResolver(registerSchema),
+        mode: 'onTouched',
+    });
 
     const inputStyle = { background: '#0c2340', border: '1px solid #304259' };
     const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -151,9 +154,26 @@ export default function Login() {
         try {
             await register(data as RegisterPayload);
             setIsRegister(false);
+            toast.success('Conta criada com sucesso! Faça login para continuar.');
         } catch (err: unknown) {
-            const error = err as { response?: { data?: { message?: string } } };
-            const msg = error.response?.data?.message || 'Erro ao registar';
+            const error = err as { response?: { data?: { message?: string; code?: string; detail?: string } } };
+            const raw = error.response?.data;
+            let msg = 'Erro ao registar. Tente novamente.';
+
+            if (raw?.code === '23505') {
+                // unique constraint violation — detect which field
+                const detail = raw.detail ?? raw.message ?? '';
+                if (detail.includes('email')) {
+                    msg = 'Este email já está registado. Tente fazer login.';
+                } else if (detail.includes('nif')) {
+                    msg = 'Este NIF já está registado. Tente fazer login.';
+                } else {
+                    msg = 'Já existe uma conta com esses dados. Tente fazer login.';
+                }
+            } else if (raw?.message) {
+                msg = raw.message;
+            }
+
             setServerError(msg);
             toast.error(msg);
         }
@@ -314,6 +334,14 @@ export default function Login() {
                         </form>
                     ) : (
                         <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
+                            {serverError && (
+                                <div className="flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm" style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.25)' }}>
+                                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    </svg>
+                                    <span className="text-red-400">{serverError}</span>
+                                </div>
+                            )}
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Nome Completo</label>
                                 <div className="relative">
@@ -331,6 +359,12 @@ export default function Login() {
                                         onBlur={onBlur}
                                     />
                                 </div>
+                                {registerForm.formState.errors.nome_completo && (
+                                    <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                        {registerForm.formState.errors.nome_completo.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
@@ -344,6 +378,12 @@ export default function Login() {
                                         onFocus={onFocus}
                                         onBlur={onBlur}
                                     />
+                                    {registerForm.formState.errors.nif && (
+                                        <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                            {registerForm.formState.errors.nif.message}
+                                        </p>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>Tipo</label>
@@ -385,6 +425,12 @@ export default function Login() {
                                         onBlur={onBlur}
                                     />
                                 </div>
+                                {registerForm.formState.errors.email && (
+                                    <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                        {registerForm.formState.errors.email.message}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -405,6 +451,12 @@ export default function Login() {
                                         onBlur={onBlur}
                                     />
                                 </div>
+                                {registerForm.formState.errors.senha && (
+                                    <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                                        {registerForm.formState.errors.senha.message}
+                                    </p>
+                                )}
                             </div>
 
                             <button
