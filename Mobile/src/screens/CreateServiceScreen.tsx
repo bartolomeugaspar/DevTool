@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, ActivityIndicator, StatusBar, Alert,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,7 +24,7 @@ type Form = z.infer<typeof schema>;
 export default function CreateServiceScreen() {
   const navigation   = useNavigation();
   const queryClient  = useQueryClient();
-  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText, btnPrimaryText } = useTheme();
 
   const { control, handleSubmit, formState: { errors } } = useForm<Form>({
     resolver: zodResolver(schema) as any,
@@ -61,8 +62,10 @@ export default function CreateServiceScreen() {
 
       {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: border }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 4 }}>
-          <Text style={{ color: accent, fontSize: 16 }}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 6 }}>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M15 18l-6-6 6-6" />
+          </Svg>
         </TouchableOpacity>
         <Text style={{ color: text1, fontSize: 18, fontWeight: '800' }}>Criar Serviço</Text>
       </View>
@@ -147,8 +150,8 @@ export default function CreateServiceScreen() {
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent, opacity: mutation.isPending ? 0.7 : 1 }}
             >
               {mutation.isPending
-                ? <ActivityIndicator color="#07111e" />
-                : <Text style={{ color: '#07111e', fontWeight: '800', fontSize: 14 }}>Criar Serviço</Text>
+                ? <ActivityIndicator color={btnPrimaryText} />
+                : <Text style={{ color: btnPrimaryText, fontWeight: '800', fontSize: 14 }}>Criar Serviço</Text>
               }
             </TouchableOpacity>
           </View>

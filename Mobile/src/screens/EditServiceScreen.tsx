@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, ActivityIndicator, StatusBar, Alert,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -27,7 +28,7 @@ export default function EditServiceScreen() {
   const route       = useRoute<RouteT>();
   const { id }      = route.params;
   const queryClient = useQueryClient();
-  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText, skelBg } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText, skelBg, btnPrimaryText } = useTheme();
 
   const { data: service, isLoading } = useQuery({
     queryKey: QUERY_KEYS.SERVICE(id),
@@ -77,7 +78,7 @@ export default function EditServiceScreen() {
       <View style={{ flex: 1, backgroundColor: pageBg, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
         <Text style={{ color: '#f87171', fontSize: 15 }}>Serviço não encontrado.</Text>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 12 }}>
-          <Text style={{ color: accent }}>← Voltar</Text>
+          <Text style={{ color: accent }}>Voltar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -91,8 +92,10 @@ export default function EditServiceScreen() {
       <StatusBar barStyle="light-content" backgroundColor={pageBg} />
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: border }}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 4 }}>
-          <Text style={{ color: accent, fontSize: 16 }}>← Voltar</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 6 }}>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M15 18l-6-6 6-6" />
+          </Svg>
         </TouchableOpacity>
         <Text style={{ color: text1, fontSize: 18, fontWeight: '800' }}>Editar Serviço</Text>
       </View>
@@ -177,8 +180,8 @@ export default function EditServiceScreen() {
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent, opacity: mutation.isPending ? 0.7 : 1 }}
             >
               {mutation.isPending
-                ? <ActivityIndicator color="#07111e" />
-                : <Text style={{ color: '#07111e', fontWeight: '800', fontSize: 14 }}>Guardar</Text>
+                ? <ActivityIndicator color={btnPrimaryText} />
+                : <Text style={{ color: btnPrimaryText, fontWeight: '800', fontSize: 14 }}>Guardar</Text>
               }
             </TouchableOpacity>
           </View>
