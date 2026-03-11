@@ -37,8 +37,8 @@ const FEATURES = [
     },
 ];
 
-const STAGGER_MS = 1000;   // gap between each pill appearing
-const HOLD_MS = 2000;  // how long all pills stay visible before reset
+const STAGGER_MS = 1000;
+const HOLD_MS = 2000;
 
 function FeaturePills() {
     const [visibleSet, setVisibleSet] = useState<Set<number>>(new Set());
@@ -56,10 +56,8 @@ function FeaturePills() {
             if (cancelled) return;
             clearAll();
 
-            // Reset — slide all out
             setVisibleSet(new Set());
 
-            // Slide each pill in one by one
             FEATURES.forEach((_, i) => {
                 const t = setTimeout(() => {
                     if (cancelled) return;
@@ -68,8 +66,7 @@ function FeaturePills() {
                 timersRef.current.push(t);
             });
 
-            // After last pill + hold time, restart the cycle
-            const totalIn = 300 + (FEATURES.length - 1) * STAGGER_MS + 500; // +500 for slide-in duration
+            const totalIn = 300 + (FEATURES.length - 1) * STAGGER_MS + 500;
             const t = setTimeout(() => {
                 if (!cancelled) runCycle();
             }, totalIn + HOLD_MS);

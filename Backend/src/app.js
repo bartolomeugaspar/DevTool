@@ -4,17 +4,14 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check
 app.get('/', (req, res) => {
   res.json({ message: 'Backend-Bulir API is running 🚀' });
 });
 
-// Routes
 app.use('/api', require('./routes/routes'));
 
 const PORT = process.env.PORT || 3000;
