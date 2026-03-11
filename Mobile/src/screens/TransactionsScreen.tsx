@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity,
   ActivityIndicator, StatusBar, Alert, Modal,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '../services/transactionService';
@@ -169,7 +170,12 @@ export default function TransactionsScreen() {
           ))
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 48, gap: 10 }}>
-            <Text style={{ fontSize: 36 }}>📋</Text>
+            <View style={{ width: 60, height: 60, borderRadius: 18, backgroundColor: accentBg, alignItems: 'center', justifyContent: 'center' }}>
+              <Svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <Path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <Path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+              </Svg>
+            </View>
             <Text style={{ color: text2, fontSize: 14 }}>
               {statusFilter !== 'todos'
                 ? `Sem transações ${FILTER_TABS.find(t => t.key === statusFilter)?.label.toLowerCase()}.`

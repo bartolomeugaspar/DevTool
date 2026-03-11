@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TextInput, TouchableOpacity,
   ActivityIndicator, StatusBar, Alert, Modal,
 } from 'react-native';
+import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
@@ -27,7 +28,7 @@ function ServiceCard({
   onEdit: (id: string) => void;
   onHire: (id: string) => void;
 }) {
-  const { card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText } = useTheme();
+  const { card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText, btnPrimaryText } = useTheme();
   const isOwn = service.prestador_id === myId;
 
   return (
@@ -72,7 +73,7 @@ function ServiceCard({
             onPress={() => onHire(service.id)}
             style={{ flex: 1, paddingVertical: 10, borderRadius: 12, alignItems: 'center', backgroundColor: accent }}
           >
-            <Text style={{ color: '#07111e', fontWeight: '700', fontSize: 13 }}>Contratar</Text>
+            <Text style={{ color: btnPrimaryText, fontWeight: '700', fontSize: 13 }}>Contratar</Text>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -84,7 +85,7 @@ function ServiceCard({
 export default function ServicesScreen() {
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
-  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, inputBorder, skelBg } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, inputBorder, skelBg, btnPrimaryText } = useTheme();
   const { user } = useAuthStore();
   const insets = useSafeAreaInsets();
   const isPrestador = user?.tipo_usuario === 'prestador';
@@ -165,7 +166,7 @@ export default function ServicesScreen() {
               onPress={() => navigation.navigate('CreateService')}
               style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: accent, paddingHorizontal: 14, paddingVertical: 9, borderRadius: 12 }}
             >
-              <Text style={{ color: '#07111e', fontWeight: '700', fontSize: 13 }}>+ Criar</Text>
+              <Text style={{ color: btnPrimaryText, fontWeight: '700', fontSize: 13 }}>+ Criar</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -173,7 +174,10 @@ export default function ServicesScreen() {
         {/* Search */}
         {!isLoading && baseServices.length > 0 && (
           <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: inputBg, borderRadius: 12, borderWidth: 1, borderColor: inputBorder, paddingHorizontal: 12, gap: 8 }}>
-            <Text style={{ color: text2, fontSize: 16 }}>🔍</Text>
+            <Svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={text2} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <Circle cx="11" cy="11" r="8" />
+              <Path d="M21 21l-4.35-4.35" />
+            </Svg>
             <TextInput
               style={{ flex: 1, color: text1, fontSize: 14, paddingVertical: 11 }}
               placeholder={isPrestador ? 'Pesquisar nos teus serviços...' : 'Pesquisar serviços...'}
@@ -205,8 +209,11 @@ export default function ServicesScreen() {
           ))
         ) : displayServices.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 48, gap: 10 }}>
-            <View style={{ width: 60, height: 60, borderRadius: 18, backgroundColor: 'rgba(49,236,198,0.10)', alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 28 }}>📋</Text>
+            <View style={{ width: 60, height: 60, borderRadius: 18, backgroundColor: accentBg, alignItems: 'center', justifyContent: 'center' }}>
+              <Svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+                <Path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <Path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+              </Svg>
             </View>
             <Text style={{ color: text2, fontSize: 14 }}>
               {search
@@ -220,7 +227,7 @@ export default function ServicesScreen() {
                 onPress={() => navigation.navigate('CreateService')}
                 style={{ backgroundColor: accent, paddingHorizontal: 20, paddingVertical: 10, borderRadius: 12 }}
               >
-                <Text style={{ color: '#07111e', fontWeight: '700' }}>Criar primeiro serviço</Text>
+                <Text style={{ color: btnPrimaryText, fontWeight: '700' }}>Criar primeiro serviço</Text>
               </TouchableOpacity>
             )}
           </View>
