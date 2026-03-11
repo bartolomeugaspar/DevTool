@@ -14,6 +14,7 @@ export interface ThemeTokens {
   skelBg:      string;
   btnSecBg:    string;
   btnSecText:  string;
+  btnPrimaryText: string;
 }
 
 export function tokens(light: boolean): ThemeTokens {
@@ -33,5 +34,6 @@ export function tokens(light: boolean): ThemeTokens {
     skelBg:      light ? '#e5e7eb'              : '#1a3557',
     btnSecBg:    light ? '#f3f4f6'              : '#1a3557',
     btnSecText:  light ? '#0c2340'              : '#8e9bab',
+    btnPrimaryText: light ? '#ffffff'           : '#07111e',
   };
 }
