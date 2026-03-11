@@ -160,7 +160,9 @@ export default function Login() {
             const raw = error.response?.data;
             let msg = 'Erro ao registar. Tente novamente.';
 
-            if (raw?.code === '23505') {
+            if (raw?.code === 'DUPLICATE_NAME') {
+                msg = 'Este nome completo já está registado. Use um nome diferente.';
+            } else if (raw?.code === '23505') {
 
                 const detail = raw.detail ?? raw.message ?? '';
                 if (detail.includes('email')) {
@@ -233,7 +235,7 @@ export default function Login() {
                     <p className="text-indigo-100 text-base leading-relaxed mb-10">
                         Plataforma profissional de serviços e transações entre clientes e prestadores
                     </p>
-                    
+
                     <FeaturePills />
                 </div>
 

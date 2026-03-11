@@ -5,6 +5,20 @@ const jwt = require('jsonwebtoken');
 async function register(req, res) {
   const { nome_completo, nif, email, senha, tipo_usuario } = req.body;
 
+  // Check for duplicate nome_completo
+  const { data: existing } = await supabase
+    .from('users')
+    .select('id')
+    .ilike('nome_completo', nome_completo.trim())
+    .maybeSingle();
+
+  if (existing) {
+    return res.status(400).json({
+      code: 'DUPLICATE_NAME',
+      message: 'Este nome completo já está registado. Use um nome diferente.',
+    });
+  }
+
   const hash = await bcrypt.hash(senha, 10);
 
   const { data, error } = await supabase
