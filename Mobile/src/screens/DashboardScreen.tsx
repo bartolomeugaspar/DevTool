@@ -3,15 +3,15 @@ import {
   View, Text, ScrollView, TouchableOpacity,
   Modal, ActivityIndicator, StatusBar, Alert,
 } from 'react-native';
+import Svg, { Path, Circle } from 'react-native-svg';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/authStore';
 import { useTheme } from '../hooks/useTheme';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
 import { walletService } from '../services/walletService';
-import { authService } from '../services/authService';
 import { STATUS_STYLES, QUERY_KEYS, TOPUP_AMOUNTS } from '../lib/constants';
-import type { Reservation } from '../types';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function greeting() {
@@ -107,9 +107,10 @@ function Skel({ w, h = 28 }: { w: number; h?: number }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function DashboardScreen() {
-  const { user, token, setAuth } = useAuthStore();
-  const { pageBg, card, border, text1, text2, accent, accentBg, skelBg } = useTheme();
+  const { user, token, setAuth, logout } = useAuthStore();
+  const { pageBg, card, border, text1, text2, accent, accentBg, skelBg, toggle, light } = useTheme();
   const [showTopUp, setShowTopUp] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const isPrestador = user?.tipo_usuario === 'prestador';
   const firstName   = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
@@ -145,10 +146,10 @@ export default function DashboardScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: pageBg }}>
-      <StatusBar barStyle="light-content" backgroundColor={pageBg} />
+      <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={pageBg} />
       {showTopUp && <TopUpModal onClose={() => setShowTopUp(false)} />}
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: 32 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, paddingTop: insets.top + 16, gap: 16 }}>
 
         {/* ── Hero card ──────────────────────────────────────────────────── */}
         <View style={{ backgroundColor: card, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: border, gap: 12 }}>
@@ -160,6 +161,33 @@ export default function DashboardScreen() {
               <Text style={{ color: accent, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1.5 }}>{greeting()}</Text>
               <Text style={{ color: text1, fontSize: 18, fontWeight: '800', marginTop: 1 }}>{firstName}</Text>
               <Text style={{ color: text2, fontSize: 12, marginTop: 1 }}>{user?.email}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <TouchableOpacity
+                onPress={toggle}
+                style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: accentBg, borderWidth: 1, borderColor: border, alignItems: 'center', justifyContent: 'center' }}
+              >
+                {light ? (
+                  <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <Circle cx="12" cy="12" r="4" />
+                    <Path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                  </Svg>
+                ) : (
+                  <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                    <Path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </Svg>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => logout()}
+                style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(248,113,113,0.10)', borderWidth: 1, borderColor: 'rgba(248,113,113,0.30)', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <Path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <Path d="M16 17l5-5-5-5" />
+                  <Path d="M21 12H9" />
+                </Svg>
+              </TouchableOpacity>
             </View>
           </View>
 
