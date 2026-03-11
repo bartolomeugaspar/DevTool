@@ -37,7 +37,7 @@ export default function ServiceCard({ service, onDelete, isDeleting }: ServiceCa
       )}
 
       <div
-        className="rounded-2xl p-5 flex flex-col gap-3 transition-all"
+        className="rounded-2xl p-5 flex flex-col gap-3 transition-all h-full w-full"
         style={{ background: card, border: `1px solid ${border}` }}
         onMouseEnter={e => (e.currentTarget.style.borderColor = hoverBorder)}
         onMouseLeave={e => (e.currentTarget.style.borderColor = border)}

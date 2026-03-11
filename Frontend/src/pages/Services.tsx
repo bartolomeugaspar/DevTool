@@ -13,7 +13,7 @@ function ServiceSkeleton({ card, border, skelBg }: { card: string; border: strin
     <div className="rounded-lg animate-pulse" style={{ width: w, height: h, background: skelBg }} />
   );
   return (
-    <div className="rounded-2xl p-5 flex flex-col gap-3" style={{ background: card, border: `1px solid ${border}` }}>
+    <div className="rounded-2xl p-5 flex flex-col gap-3 h-full w-full" style={{ background: card, border: `1px solid ${border}` }}>
       <div className="flex justify-between items-start gap-3">
         <P w="60%" h="1.1rem" />
         <P w="4.5rem" h="1.1rem" />
@@ -75,7 +75,7 @@ export default function Services() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="w-full px-4 sm:px-6 py-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
@@ -145,9 +145,11 @@ export default function Services() {
 
       {/* Skeletons */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {Array.from({ length: 6 }).map((_, i) => (
-            <ServiceSkeleton key={i} card={card} border={border} skelBg={skelBg} />
+            <div key={i} className="flex w-full">
+              <ServiceSkeleton card={card} border={border} skelBg={skelBg} />
+            </div>
           ))}
         </div>
       ) : displayServices.length === 0 ? (
@@ -181,17 +183,18 @@ export default function Services() {
           ) : null}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
           {displayServices.map((service) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              isDeleting={deletingId === service.id && deleteMutation.isPending}
-              onDelete={(id) => {
-                setDeletingId(id);
-                deleteMutation.mutate(id);
-              }}
-            />
+            <div key={service.id} className="flex w-full">
+              <ServiceCard
+                service={service}
+                isDeleting={deletingId === service.id && deleteMutation.isPending}
+                onDelete={(id) => {
+                  setDeletingId(id);
+                  deleteMutation.mutate(id);
+                }}
+              />
+            </div>
           ))}
         </div>
       )}
