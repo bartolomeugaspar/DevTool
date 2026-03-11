@@ -33,7 +33,6 @@ function RowSkeleton({ border, skelBg, cols }: { border: string; skelBg: string;
   );
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function Transactions() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
@@ -73,7 +72,6 @@ export default function Transactions() {
     return reservations.filter(r => r.status === statusFilter);
   }, [reservations, statusFilter]);
 
-  // Summary totals
   const totals = useMemo(() => {
     const total = reservations.reduce((s, r) => s + (r.services?.preco ?? 0), 0);
     const pending = reservations.filter(r => r.status === 'pendente').length;

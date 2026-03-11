@@ -132,7 +132,7 @@ export default function Login() {
     const handleLogin = async (data: LoginForm) => {
         setServerError('');
         try {
-            // Detect if identifier is email or NIF (9 digits)
+            
             const isNif = /^\d{9}$/.test(data.identifier.trim());
             const payload = isNif
                 ? { nif: data.identifier.trim(), senha: data.senha }
@@ -158,7 +158,7 @@ export default function Login() {
             let msg = 'Erro ao registar. Tente novamente.';
 
             if (raw?.code === '23505') {
-                // unique constraint violation — detect which field
+
                 const detail = raw.detail ?? raw.message ?? '';
                 if (detail.includes('email')) {
                     msg = 'Este email já está registado. Tente fazer login.';

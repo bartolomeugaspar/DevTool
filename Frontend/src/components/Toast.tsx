@@ -14,9 +14,9 @@ function ToastItem({ message, type = 'success', duration = 3500, onClose }: Toas
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Slide in
+
     const show = setTimeout(() => setVisible(true), 10);
-    // Slide out then close
+
     const hide = setTimeout(() => setVisible(false), duration - 400);
     const close = setTimeout(onClose, duration);
     return () => { clearTimeout(show); clearTimeout(hide); clearTimeout(close); };
@@ -99,8 +99,6 @@ function ToastItem({ message, type = 'success', duration = 3500, onClose }: Toas
   );
 }
 
-// ─── Global toast state ───────────────────────────────────────────────────────
-
 interface ToastEntry {
   id: number;
   message: string;
@@ -127,8 +125,6 @@ export const toast = {
   error: (msg: string, duration?: number) => toast.show(msg, 'error', duration),
   info: (msg: string, duration?: number) => toast.show(msg, 'info', duration),
 };
-
-// ─── Provider (mount once in App) ────────────────────────────────────────────
 
 export function ToastProvider() {
   const [toasts, setToasts] = useState<ToastEntry[]>([]);

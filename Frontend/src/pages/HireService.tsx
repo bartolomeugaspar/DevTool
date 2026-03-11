@@ -27,7 +27,7 @@ export default function HireService() {
     mutationFn: transactionService.hire,
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.RESERVATIONS });
-      // Refresh user profile to update saldo
+      
       if (token) {
         const updatedUser = await authService.getMe();
         setAuth(token, updatedUser);

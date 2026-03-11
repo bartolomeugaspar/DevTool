@@ -24,7 +24,6 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // ── theme tokens ────────────────────────────────────────────────────────
   const navBg     = light ? '#ffffff'              : '#0c2340';
   const navBorder = light ? '#e5e7eb'              : '#1a3557';
   const dropBg    = light ? '#ffffff'              : '#0e1e35';
@@ -69,14 +68,12 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
 
-          {/* Logo */}
           <Link to="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
             <BulirLogo />
             <span className="text-base font-bold group-hover:opacity-80 transition-opacity hidden sm:block"
               style={{ color: text1 }}>Bulir</span>
           </Link>
 
-          {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
             {navLinks.map(({ to, label }) => (
               <Link

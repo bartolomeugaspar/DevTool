@@ -11,7 +11,7 @@ export function useAuth() {
 
   const login = async (payload: LoginPayload) => {
     const { token } = await authService.login(payload);
-    // Set a temporary user so the api interceptor can read the token before getMe()
+    
     setAuth(token, { id: '', nome_completo: '', nif: '', email: payload.email ?? payload.nif ?? '', tipo_usuario: 'cliente', saldo: 0, created_at: '' });
     const fullUser = await authService.getMe();
     setAuth(token, fullUser);
