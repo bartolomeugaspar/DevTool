@@ -71,7 +71,6 @@ function TabIcon({ name, color, focused }: { name: string; color: string; focuse
   return icons[name] ?? null;
 }
 
-// ── Main tab navigator ────────────────────────────────────────────────────────
 function MainTabs() {
   const { navBg, navBorder, accent, text2 } = useTheme();
 
@@ -102,7 +101,6 @@ function MainTabs() {
   );
 }
 
-// ── Root navigator ────────────────────────────────────────────────────────────
 export default function AppNavigator() {
   const { token } = useAuthStore();
 
