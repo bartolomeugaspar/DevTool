@@ -35,7 +35,8 @@ export default function EditServiceScreen() {
   });
 
   const { control, handleSubmit, formState: { errors } } = useForm<Form>({
-    resolver: zodResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema) as any,
     values: service ? { nome: service.nome, descricao: service.descricao, preco: service.preco } : undefined,
   });
 
@@ -171,7 +172,7 @@ export default function EditServiceScreen() {
               <Text style={{ color: btnSecText, fontWeight: '600', fontSize: 14 }}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSubmit(data => mutation.mutate(data))}
+              onPress={handleSubmit((data: Form) => mutation.mutate(data))}
               disabled={mutation.isPending}
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent, opacity: mutation.isPending ? 0.7 : 1 }}
             >

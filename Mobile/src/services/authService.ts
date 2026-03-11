@@ -10,8 +10,10 @@ export const authService = {
     const { data } = await api.post<User>('/register', payload);
     return data;
   },
-  async getMe(): Promise<User> {
-    const { data } = await api.get<User>('/me');
+  async getMe(token?: string): Promise<User> {
+    const { data } = await api.get<User>('/me', {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
     return data;
   },
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   KeyboardAvoidingView, Platform, ActivityIndicator, StatusBar, Alert,
@@ -26,7 +26,7 @@ export default function CreateServiceScreen() {
   const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText } = useTheme();
 
   const { control, handleSubmit, formState: { errors } } = useForm<Form>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as any,
   });
 
   const mutation = useMutation({
@@ -142,7 +142,7 @@ export default function CreateServiceScreen() {
               <Text style={{ color: btnSecText, fontWeight: '600', fontSize: 14 }}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleSubmit(data => mutation.mutate(data))}
+              onPress={handleSubmit((data: Form) => mutation.mutate(data))}
               disabled={mutation.isPending}
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent, opacity: mutation.isPending ? 0.7 : 1 }}
             >
