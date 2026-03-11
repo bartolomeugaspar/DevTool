@@ -21,7 +21,6 @@ export function useAuth() {
 
   const register = async (payload: RegisterPayload) => {
     await authService.register(payload);
-    toast.success('Conta criada com sucesso! Podes entrar agora.');
     navigate(ROUTES.LOGIN);
   };
 
