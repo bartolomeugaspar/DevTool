@@ -12,6 +12,7 @@ import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
 import { walletService } from '../services/walletService';
 import { STATUS_STYLES, QUERY_KEYS, TOPUP_AMOUNTS } from '../lib/constants';
+import Toast from '../components/Toast';
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function greeting() {
@@ -34,7 +35,7 @@ function timeAgo(dateStr: string) {
 // ── Top-up modal ──────────────────────────────────────────────────────────────
 function TopUpModal({ onClose }: { onClose: () => void }) {
   const { token, setAuth, user } = useAuthStore();
-  const { card, border, text1, text2, accent, accentBg, inputBg } = useTheme();
+  const { card, border, text1, text2, accent, accentBg, inputBg, btnPrimaryText } = useTheme();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -85,8 +86,8 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
             }}
           >
             {mutation.isPending
-              ? <ActivityIndicator color="#07111e" />
-              : <Text style={{ color: '#07111e', fontWeight: '800', fontSize: 15 }}>Confirmar</Text>
+              ? <ActivityIndicator color={btnPrimaryText} />
+              : <Text style={{ color: btnPrimaryText, fontWeight: '800', fontSize: 15 }}>Confirmar</Text>
             }
           </TouchableOpacity>
 
@@ -108,9 +109,14 @@ function Skel({ w, h = 28 }: { w: number; h?: number }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function DashboardScreen() {
   const { user, token, setAuth, logout } = useAuthStore();
-  const { pageBg, card, border, text1, text2, accent, accentBg, skelBg, toggle, light } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, accentBg, skelBg, toggle, light, btnPrimaryText } = useTheme();
   const [showTopUp, setShowTopUp] = useState(false);
+  const [toast, setToast] = useState<{ visible: boolean; message: string; type: 'success' | 'error' | 'info' }>({ visible: false, message: '', type: 'success' });
   const insets = useSafeAreaInsets();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const isPrestador = user?.tipo_usuario === 'prestador';
   const firstName   = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
@@ -148,6 +154,12 @@ export default function DashboardScreen() {
     <View style={{ flex: 1, backgroundColor: pageBg }}>
       <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={pageBg} />
       {showTopUp && <TopUpModal onClose={() => setShowTopUp(false)} />}
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={() => setToast(t => ({ ...t, visible: false }))}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, paddingTop: insets.top + 16, gap: 16 }}>
 
@@ -179,7 +191,7 @@ export default function DashboardScreen() {
                 )}
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => logout()}
+                onPress={handleLogout}
                 style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(248,113,113,0.10)', borderWidth: 1, borderColor: 'rgba(248,113,113,0.30)', alignItems: 'center', justifyContent: 'center' }}
               >
                 <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -207,7 +219,7 @@ export default function DashboardScreen() {
                   onPress={() => setShowTopUp(true)}
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: accent, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 }}
                 >
-                  <Text style={{ color: '#07111e', fontSize: 11, fontWeight: '800' }}>+ Carregar</Text>
+                  <Text style={{ color: btnPrimaryText, fontSize: 11, fontWeight: '800' }}>+ Carregar</Text>
                 </TouchableOpacity>
               )}
             </View>
