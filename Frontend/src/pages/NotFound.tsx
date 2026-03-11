@@ -51,7 +51,7 @@ export default function NotFound() {
           onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
           onMouseLeave={e => (e.currentTarget.style.color = '#8e9bab')}
         >
-          ← Voltar
+          Voltar
         </button>
         <button
           onClick={() => navigate('/dashboard')}
