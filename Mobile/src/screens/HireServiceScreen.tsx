@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity, ScrollView,
   ActivityIndicator, StatusBar, Alert,
 } from 'react-native';
+import Svg, { Path, Polyline } from 'react-native-svg';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { serviceService } from '../services/serviceService';
@@ -21,7 +22,7 @@ export default function HireServiceScreen() {
   const { id }       = route.params;
   const queryClient  = useQueryClient();
   const { token, setAuth, user } = useAuthStore();
-  const { pageBg, card, border, text1, text2, accent, accentBg, btnSecBg, btnSecText } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, btnSecBg, btnSecText, btnPrimaryText } = useTheme();
   const [success, setSuccess] = useState(false);
 
   const { data: service, isLoading } = useQuery({
@@ -57,7 +58,7 @@ export default function HireServiceScreen() {
       <View style={{ flex: 1, backgroundColor: pageBg, alignItems: 'center', justifyContent: 'center', padding: 24 }}>
         <Text style={{ color: '#f87171' }}>Serviço não encontrado.</Text>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginTop: 12 }}>
-          <Text style={{ color: accent }}>← Voltar</Text>
+          <Text style={{ color: accent }}>Voltar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -93,8 +94,10 @@ export default function HireServiceScreen() {
         <StatusBar barStyle="light-content" backgroundColor={pageBg} />
         <View style={{ backgroundColor: card, borderRadius: 24, padding: 28, borderWidth: 1, borderColor: border, alignItems: 'center', gap: 16 }}>
           {/* Success icon */}
-          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: 'rgba(49,236,198,0.12)', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ fontSize: 36 }}>✅</Text>
+          <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: 'rgba(49,236,198,0.10)', borderWidth: 1, borderColor: 'rgba(49,236,198,0.20)', alignItems: 'center', justifyContent: 'center' }}>
+            <Svg width={32} height={32} viewBox="0 0 24 24" fill="none" stroke="#31ECC6" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+              <Polyline points="20 6 9 17 4 12" />
+            </Svg>
           </View>
 
           <Text style={{ color: text1, fontSize: 22, fontWeight: '800', textAlign: 'center' }}>
@@ -106,7 +109,7 @@ export default function HireServiceScreen() {
           </Text>
 
           {/* Summary */}
-          <View style={{ width: '100%', backgroundColor: '#071120', borderRadius: 14, padding: 14, borderWidth: 1, borderColor: border, gap: 10 }}>
+          <View style={{ width: '100%', backgroundColor: inputBg, borderRadius: 14, padding: 14, borderWidth: 1, borderColor: border, gap: 10 }}>
             {[
               { label: 'Serviço', value: service.nome },
               { label: 'Valor pago', value: `Kz ${service.preco.toFixed(2)}`, color: accent },
@@ -128,10 +131,10 @@ export default function HireServiceScreen() {
               <Text style={{ color: btnSecText, fontWeight: '600', fontSize: 14 }}>Ver serviços</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => (navigation as any).navigate('Transactions')}
+              onPress={() => (navigation as any).navigate('Main', { screen: 'Transactions' })}
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent }}
             >
-              <Text style={{ color: '#07111e', fontWeight: '800', fontSize: 14 }}>Transações</Text>
+              <Text style={{ color: btnPrimaryText, fontWeight: '800', fontSize: 14 }}>Transações</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -146,7 +149,7 @@ export default function HireServiceScreen() {
       {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: border }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 4 }}>
-          <Text style={{ color: accent, fontSize: 16 }}>← Voltar</Text>
+          <Text style={{ color: accent, fontSize: 16 }}>Voltar</Text>
         </TouchableOpacity>
         <Text style={{ color: text1, fontSize: 18, fontWeight: '800' }}>Contratar Serviço</Text>
       </View>
@@ -156,7 +159,7 @@ export default function HireServiceScreen() {
           <Text style={{ color: text1, fontSize: 18, fontWeight: '700' }}>{service.nome}</Text>
           <Text style={{ color: text2, fontSize: 14, lineHeight: 20 }}>{service.descricao}</Text>
 
-          <View style={{ backgroundColor: '#0c2340', borderRadius: 14, padding: 14, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: border }}>
+          <View style={{ backgroundColor: inputBg, borderRadius: 14, padding: 14, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: border }}>
             <Text style={{ color: text2, fontSize: 14 }}>Valor a debitar</Text>
             <Text style={{ color: accent, fontSize: 24, fontWeight: '900' }}>Kz {service.preco.toFixed(2)}</Text>
           </View>
@@ -178,8 +181,8 @@ export default function HireServiceScreen() {
               style={{ flex: 1, paddingVertical: 13, borderRadius: 13, alignItems: 'center', backgroundColor: accent, opacity: hireMutation.isPending ? 0.7 : 1 }}
             >
               {hireMutation.isPending
-                ? <ActivityIndicator color="#07111e" />
-                : <Text style={{ color: '#07111e', fontWeight: '800', fontSize: 14 }}>Confirmar</Text>
+                ? <ActivityIndicator color={btnPrimaryText} />
+                : <Text style={{ color: btnPrimaryText, fontWeight: '800', fontSize: 14 }}>Confirmar</Text>
               }
             </TouchableOpacity>
           </View>
