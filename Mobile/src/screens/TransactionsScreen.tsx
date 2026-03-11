@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity,
   ActivityIndicator, StatusBar, Alert, Modal,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '../services/transactionService';
 import { useAuthStore } from '../store/authStore';
@@ -34,6 +35,7 @@ export default function TransactionsScreen() {
   const queryClient = useQueryClient();
   const isPrestador = user?.tipo_usuario === 'prestador';
   const { pageBg, card, border, text1, text2, accent, accentBg, skelBg } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('todos');
   const [cancelTarget, setCancelTarget]  = useState<Reservation | null>(null);
@@ -107,7 +109,7 @@ export default function TransactionsScreen() {
         </Modal>
       )}
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, gap: 14, paddingBottom: 32 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, paddingTop: insets.top + 16, gap: 14 }}>
         <Text style={{ color: text1, fontSize: 22, fontWeight: '800' }}>Transações</Text>
 
         {/* Summary cards */}
@@ -133,7 +135,7 @@ export default function TransactionsScreen() {
 
         {/* Filter tabs */}
         {!isLoading && reservations.length > 0 && (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingVertical: 2 }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
             {FILTER_TABS.map(tab => {
               const active = statusFilter === tab.key;
               const count = tab.key === 'pendente' ? totals.pending : tab.key === 'concluido' ? totals.done : tab.key === 'cancelado' ? totals.cancelled : null;
@@ -142,18 +144,18 @@ export default function TransactionsScreen() {
                   key={tab.key}
                   onPress={() => setStatusFilter(tab.key)}
                   style={{
-                    paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20,
+                    paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20,
                     backgroundColor: active ? accentBg : card,
                     borderWidth: 1, borderColor: active ? accent : border,
                   }}
                 >
                   <Text style={{ color: active ? accent : text2, fontWeight: '700', fontSize: 12 }}>
-                    {tab.label}{count !== null ? ` ${count}` : ''}
+                    {tab.label}{count !== null ? ` (${count})` : ''}
                   </Text>
                 </TouchableOpacity>
               );
             })}
-          </ScrollView>
+          </View>
         )}
 
         {/* Content */}
