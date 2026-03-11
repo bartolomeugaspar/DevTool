@@ -1,7 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import {
-  View, Text, ScrollView, TextInput, TouchableOpacity,
-  ActivityIndicator, StatusBar, Alert, Modal,
+  View, Text, 
+  ScrollView, 
+  TextInput, 
+  TouchableOpacity,
+  ActivityIndicator, 
+  StatusBar, Alert, Modal,
 } from 'react-native';
 import Svg, { Path, Circle, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,7 +21,6 @@ import type { Service } from '../types';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 
-// ── Service Card ──────────────────────────────────────────────────────────────
 function ServiceCard({
   service, isPrestador, myId, onDelete, onEdit, onHire,
 }: {
@@ -81,7 +84,6 @@ function ServiceCard({
   );
 }
 
-// ── Screen ────────────────────────────────────────────────────────────────────
 export default function ServicesScreen() {
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -121,8 +123,7 @@ export default function ServicesScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: pageBg }}>
       <StatusBar barStyle="light-content" backgroundColor={pageBg} />
-
-      {/* Delete confirm modal */}
+      
       {confirmDelete && (
         <Modal transparent animationType="fade" onRequestClose={() => setConfirmDelete(null)}>
           <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: 24 }}>

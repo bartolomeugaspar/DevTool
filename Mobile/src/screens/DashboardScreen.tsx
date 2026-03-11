@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  Modal, ActivityIndicator, StatusBar, Alert,
+  View, Text,
+  ScrollView,
+  TouchableOpacity,
+  Modal, ActivityIndicator,
+  StatusBar, Alert,
 } from 'react-native';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,7 +17,6 @@ import { walletService } from '../services/walletService';
 import { STATUS_STYLES, QUERY_KEYS, TOPUP_AMOUNTS } from '../lib/constants';
 import Toast from '../components/Toast';
 
-// ── helpers ───────────────────────────────────────────────────────────────────
 function greeting() {
   const h = new Date().getHours();
   if (h < 12) return 'Bom dia';
@@ -32,7 +34,6 @@ function timeAgo(dateStr: string) {
   return `há ${Math.floor(h / 24)}d`;
 }
 
-// ── Top-up modal ──────────────────────────────────────────────────────────────
 function TopUpModal({ onClose }: { onClose: () => void }) {
   const { token, setAuth, user } = useAuthStore();
   const { card, border, text1, text2, accent, accentBg, inputBg, btnPrimaryText } = useTheme();
@@ -100,13 +101,11 @@ function TopUpModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ── Skeleton ──────────────────────────────────────────────────────────────────
 function Skel({ w, h = 28 }: { w: number; h?: number }) {
   const { skelBg } = useTheme();
   return <View style={{ width: w, height: h, borderRadius: 8, backgroundColor: skelBg }} />;
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
 export default function DashboardScreen() {
   const { user, token, setAuth, logout } = useAuthStore();
   const { pageBg, card, border, text1, text2, accent, accentBg, skelBg, toggle, light, btnPrimaryText } = useTheme();
@@ -119,17 +118,17 @@ export default function DashboardScreen() {
   };
 
   const isPrestador = user?.tipo_usuario === 'prestador';
-  const firstName   = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
-  const initials    = user?.nome_completo?.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase() ?? '?';
+  const firstName = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
+  const initials = user?.nome_completo?.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase() ?? '?';
 
   const { data: services = [], isLoading: loadingServices } = useQuery({
     queryKey: QUERY_KEYS.SERVICES,
-    queryFn:  serviceService.getAll,
+    queryFn: serviceService.getAll,
   });
 
   const { data: reservations = [], isLoading: loadingReservations } = useQuery({
     queryKey: QUERY_KEYS.RESERVATIONS,
-    queryFn:  transactionService.getHistory,
+    queryFn: transactionService.getHistory,
   });
 
   const recent = [...reservations]
@@ -141,13 +140,13 @@ export default function DashboardScreen() {
     .reduce((s, r) => s + (r.services?.preco ?? 0), 0);
 
   const concluded = reservations.filter(r => r.status === 'concluido').length;
-  const pending   = reservations.filter(r => r.status === 'pendente').length;
+  const pending = reservations.filter(r => r.status === 'pendente').length;
 
   const stats = [
-    { label: 'Serviços',    value: loadingServices    ? null : String(services.length), sub: 'na plataforma', color: '#818cf8' },
+    { label: 'Serviços', value: loadingServices ? null : String(services.length), sub: 'na plataforma', color: '#818cf8' },
     { label: isPrestador ? 'Contratações' : 'Total gasto', value: loadingReservations ? null : isPrestador ? String(reservations.length) : `Kz ${totalSpent.toFixed(2)}`, sub: isPrestador ? 'nas tuas ofertas' : 'em serviços', color: '#f472b6' },
-    { label: 'Concluídos',  value: loadingReservations ? null : String(concluded), sub: 'serviços', color: accent },
-    { label: 'Pendentes',   value: loadingReservations ? null : String(pending),   sub: 'a aguardar', color: '#eab308' },
+    { label: 'Concluídos', value: loadingReservations ? null : String(concluded), sub: 'serviços', color: accent },
+    { label: 'Pendentes', value: loadingReservations ? null : String(pending), sub: 'a aguardar', color: '#eab308' },
   ];
 
   return (
@@ -163,7 +162,6 @@ export default function DashboardScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, paddingTop: insets.top + 16, gap: 16 }}>
 
-        {/* ── Hero card ──────────────────────────────────────────────────── */}
         <View style={{ backgroundColor: card, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: border, gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
             <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: accentBg, alignItems: 'center', justifyContent: 'center' }}>
@@ -253,12 +251,12 @@ export default function DashboardScreen() {
 
           {loadingReservations ? (
             <View style={{ padding: 16, gap: 12 }}>
-              {[0,1,2].map(i => (
+              {[0, 1, 2].map(i => (
                 <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <Skel w={36} h={36} />
                   <View style={{ flex: 1, gap: 6 }}>
                     <Skel w={120} h={12} />
-                    <Skel w={80}  h={10} />
+                    <Skel w={80} h={10} />
                   </View>
                   <Skel w={60} h={20} />
                 </View>

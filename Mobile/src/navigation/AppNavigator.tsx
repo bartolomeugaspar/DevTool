@@ -6,7 +6,6 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import { useTheme } from '../hooks/useTheme';
 
-// Screens
 import LoginScreen from '../screens/LoginScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import ServicesScreen from '../screens/ServicesScreen';
@@ -32,7 +31,6 @@ export type TabParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab   = createBottomTabNavigator<TabParamList>();
 
-// ── Tab icon component ────────────────────────────────────────────────────────
 function TabIcon({ name, color, focused }: { name: string; color: string; focused: boolean }) {
   const paths: Record<string, string> = {
     Dashboard:    'M3.75 6A2.25 2.25 0 016 3.75h2.25... ',

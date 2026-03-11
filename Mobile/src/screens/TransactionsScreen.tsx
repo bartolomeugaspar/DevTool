@@ -1,7 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  ActivityIndicator, StatusBar, Alert, Modal,
+  View, Text, 
+  ScrollView, 
+  TouchableOpacity,
+  ActivityIndicator, 
+  StatusBar, Alert, Modal,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

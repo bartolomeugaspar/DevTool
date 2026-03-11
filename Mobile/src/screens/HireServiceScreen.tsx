@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TouchableOpacity, ScrollView,
-  ActivityIndicator, StatusBar, Alert,
+  View, Text, 
+  TouchableOpacity, 
+  ScrollView,
+  ActivityIndicator, 
+  StatusBar, Alert,
 } from 'react-native';
 import Svg, { Path, Polyline } from 'react-native-svg';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -108,7 +111,6 @@ export default function HireServiceScreen() {
             Kz <Text style={{ color: text1, fontWeight: '600' }}>{service.preco.toFixed(2)}</Text> debitado do teu saldo.
           </Text>
 
-          {/* Summary */}
           <View style={{ width: '100%', backgroundColor: inputBg, borderRadius: 14, padding: 14, borderWidth: 1, borderColor: border, gap: 10 }}>
             {[
               { label: 'Serviço', value: service.nome },
@@ -122,7 +124,6 @@ export default function HireServiceScreen() {
             ))}
           </View>
 
-          {/* Actions */}
           <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
             <TouchableOpacity
               onPress={() => navigation.goBack()}
@@ -146,7 +147,6 @@ export default function HireServiceScreen() {
     <View style={{ flex: 1, backgroundColor: pageBg }}>
       <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={headerBg} />
 
-      {/* Header */}
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: border }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 6 }}>
           <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">

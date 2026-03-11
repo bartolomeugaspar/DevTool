@@ -1,7 +1,13 @@
 import React from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, ActivityIndicator, StatusBar, Alert,
+  View, Text, 
+  TextInput, 
+  TouchableOpacity, 
+  ScrollView,
+  KeyboardAvoidingView, 
+  Platform, 
+  ActivityIndicator, 
+  StatusBar, Alert,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';

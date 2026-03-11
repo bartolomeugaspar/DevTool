@@ -1,7 +1,13 @@
 import React from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, ScrollView,
-  KeyboardAvoidingView, Platform, ActivityIndicator, StatusBar, Alert,
+  View, Text, 
+  TextInput, 
+  TouchableOpacity, 
+  ScrollView,
+  KeyboardAvoidingView, 
+  Platform, 
+  ActivityIndicator, 
+  StatusBar, Alert,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';
@@ -36,7 +42,6 @@ export default function EditServiceScreen() {
   });
 
   const { control, handleSubmit, formState: { errors } } = useForm<Form>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(schema) as any,
     values: service ? { nome: service.nome, descricao: service.descricao, preco: service.preco } : undefined,
   });
