@@ -20,7 +20,6 @@ import { useThemeStore } from '../store/themeStore';
 import Toast from '../components/Toast';
 import type { RegisterPayload } from '../types';
 
-// ── Types ────────────────────────────────────────────────────────────────────
 type LoginForm = {
   identifier: string;
   senha: string;
@@ -34,7 +33,6 @@ type RegisterForm = {
   tipo_usuario: 'cliente' | 'prestador';
 };
 
-// ── Bulir Logo ────────────────────────────────────────────────────────────────
 function BulirLogo({ size = 40 }: { size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 46 46" fill="none">
@@ -62,7 +60,6 @@ function BulirLogo({ size = 40 }: { size?: number }) {
   );
 }
 
-// ── Icon components ───────────────────────────────────────────────────────────
 function IconUser({ color = '#8e9bab' }: { color?: string }) {
   return (
     <Svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -89,7 +86,6 @@ function IconMail({ color = '#8e9bab' }: { color?: string }) {
   );
 }
 
-// ── Screen ────────────────────────────────────────────────────────────────────
 export default function LoginScreen() {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading]       = useState(false);
@@ -124,7 +120,6 @@ export default function LoginScreen() {
     fontWeight: '500' as const,
   });
 
-  // ── Login ──────────────────────────────────────────────────────────────────
   const handleLogin = loginForm.handleSubmit(async (formData) => {
     setLoading(true);
     setServerError('');
@@ -150,7 +145,6 @@ export default function LoginScreen() {
     }
   });
 
-  // ── Register ───────────────────────────────────────────────────────────────
   const handleRegister = registerForm.handleSubmit(async (data) => {
     setLoading(true);
     try {
@@ -192,10 +186,9 @@ export default function LoginScreen() {
       />
       <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={light ? '#31ECC6' : pageBg} />
 
-      {/* Theme toggle button */}
       <TouchableOpacity
         onPress={toggle}
-        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10, padding: 8, borderRadius: 12, backgroundColor: light ? 'rgba(0,0,0,0.10)' : card, borderWidth: 1, borderColor: light ? 'rgba(12,35,64,0.20)' : border }}
+        style={{ position: 'absolute', top: 30, right: 20, zIndex: 10, padding: 8, borderRadius: 12, backgroundColor: light ? 'rgba(0,0,0,0.10)' : card, borderWidth: 1, borderColor: light ? 'rgba(12,35,64,0.20)' : border }}
         activeOpacity={0.8}
       >
         {light ? (
@@ -221,7 +214,6 @@ export default function LoginScreen() {
             <BulirLogo size={56} />
           </View>
 
-          {/* Header */}
           <View style={{ marginBottom: 28, alignItems: 'center' }}>
             <Text style={{ color: light ? '#0C2340' : accent, fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 6 }}>
               {isRegister ? 'Novo utilizador' : 'Bem-vindo de volta'}
