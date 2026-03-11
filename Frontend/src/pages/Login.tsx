@@ -245,7 +245,7 @@ export default function Login() {
             </div>
 
             {/* Right Panel */}
-            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-10 lg:p-8 flex-1" style={{ background: '#060f1c' }}>
+            <div className="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 py-12 sm:px-10 lg:p-8 flex-1 overflow-y-auto" style={{ background: '#060f1c' }}>
                 <div className="w-full max-w-sm">
                     {/* Mobile logo */}
                     <div className="lg:hidden flex justify-center mb-8">
@@ -367,7 +367,7 @@ export default function Login() {
                                 )}
                             </div>
 
-                            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: '#8e9bab' }}>NIF</label>
                                     <input

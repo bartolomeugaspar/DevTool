@@ -111,8 +111,8 @@ export default function Transactions() {
             { label: 'Cancelados', value: String(totals.cancelled),  color: '#f87171', bg: 'rgba(248,113,113,0.08)' },
           ].map(({ label, value, color, bg }) => (
             <div key={label} className="rounded-2xl p-4 flex flex-col gap-1" style={{ background: card, border: `1px solid ${border}` }}>
-              <span className="text-xs font-medium uppercase tracking-wider" style={{ color: text2 }}>{label}</span>
-              <span className="text-xl font-bold" style={{ color }}>{value}</span>
+              <span className="text-xs font-medium uppercase tracking-wider truncate" style={{ color: text2 }}>{label}</span>
+              <span className="text-lg sm:text-xl font-bold break-all" style={{ color }}>{value}</span>
             </div>
           ))}
         </div>
