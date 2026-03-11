@@ -15,6 +15,7 @@ import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
+import Toast from '../components/Toast';
 import type { RegisterPayload } from '../types';
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -92,7 +93,12 @@ export default function LoginScreen() {
   const [loading, setLoading]       = useState(false);
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
   const [serverError, setServerError] = useState('');
+  const [toast, setToast] = useState<{ visible: boolean; message: string; type: 'success' | 'error' | 'info' }>({ visible: false, message: '', type: 'success' });
   const { setAuth } = useAuthStore();
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ visible: true, message, type });
+  };
 
   const loginForm = useForm<LoginForm>({
     defaultValues: { identifier: '', senha: '' },
@@ -138,8 +144,11 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await authService.register(data as RegisterPayload);
-      setIsRegister(false);
-      setServerError('');
+      showToast('Conta criada! Faça o seu login.', 'success');
+      setTimeout(() => {
+        setIsRegister(false);
+        setServerError('');
+      }, 1500);
     } catch (err: any) {
       const raw = err.response?.data;
       let msg = 'Erro ao registar. Tente novamente.';
@@ -164,6 +173,12 @@ export default function LoginScreen() {
       style={{ flex: 1, backgroundColor: '#060f1c' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        type={toast.type}
+        onHide={() => setToast(t => ({ ...t, visible: false }))}
+      />
       <StatusBar barStyle="light-content" backgroundColor="#060f1c" />
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 48 }}
