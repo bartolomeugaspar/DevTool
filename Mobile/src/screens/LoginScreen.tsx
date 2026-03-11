@@ -15,6 +15,8 @@ import Svg, { Path } from 'react-native-svg';
 import { useForm, Controller } from 'react-hook-form';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
+import { useTheme } from '../hooks/useTheme';
+import { useThemeStore } from '../store/themeStore';
 import Toast from '../components/Toast';
 import type { RegisterPayload } from '../types';
 
@@ -95,6 +97,8 @@ export default function LoginScreen() {
   const [serverError, setServerError] = useState('');
   const [toast, setToast] = useState<{ visible: boolean; message: string; type: 'success' | 'error' | 'info' }>({ visible: false, message: '', type: 'success' });
   const { setAuth } = useAuthStore();
+  const { toggle } = useThemeStore();
+  const { pageBg, card, border, text1, text2, accent, accentBg, inputBg, inputBorder, light } = useTheme();
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToast({ visible: true, message, type });
@@ -109,8 +113,15 @@ export default function LoginScreen() {
   });
 
   const getInputStyle = (name: string, hasError = false) => ({
-    ...s.input,
-    borderColor: hasError ? '#f87171' : focusedInput === name ? '#31ECC6' : '#304259',
+    backgroundColor: light ? 'rgba(255,255,255,0.85)' : inputBg,
+    borderWidth: 1.5,
+    borderColor: hasError ? '#f87171' : focusedInput === name ? (light ? '#0C2340' : accent) : (light ? 'rgba(12,35,64,0.20)' : inputBorder),
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    color: light ? '#0C2340' : text1,
+    fontSize: 14,
+    fontWeight: '500' as const,
   });
 
   // ── Login ──────────────────────────────────────────────────────────────────
@@ -170,7 +181,7 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#060f1c' }}
+      style={{ flex: 1, backgroundColor: light ? '#31ECC6' : pageBg }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <Toast
@@ -179,7 +190,25 @@ export default function LoginScreen() {
         type={toast.type}
         onHide={() => setToast(t => ({ ...t, visible: false }))}
       />
-      <StatusBar barStyle="light-content" backgroundColor="#060f1c" />
+      <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={light ? '#31ECC6' : pageBg} />
+
+      {/* Theme toggle button */}
+      <TouchableOpacity
+        onPress={toggle}
+        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10, padding: 8, borderRadius: 12, backgroundColor: light ? 'rgba(0,0,0,0.10)' : card, borderWidth: 1, borderColor: light ? 'rgba(12,35,64,0.20)' : border }}
+        activeOpacity={0.8}
+      >
+        {light ? (
+          <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#0C2340" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </Svg>
+        ) : (
+          <Svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={text2} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <Path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            <Path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" />
+          </Svg>
+        )}
+      </TouchableOpacity>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 48 }}
         keyboardShouldPersistTaps="handled"
@@ -194,13 +223,13 @@ export default function LoginScreen() {
 
           {/* Header */}
           <View style={{ marginBottom: 28, alignItems: 'center' }}>
-            <Text style={s.subheading}>
+            <Text style={{ color: light ? '#0C2340' : accent, fontSize: 13, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 6 }}>
               {isRegister ? 'Novo utilizador' : 'Bem-vindo de volta'}
             </Text>
-            <Text style={s.heading}>
+            <Text style={{ color: light ? '#0C2340' : text1, fontSize: 30, fontWeight: '800', letterSpacing: -0.5, marginBottom: 6 }}>
               {isRegister ? 'Criar conta' : 'Faça seu Login'}
             </Text>
-            <Text style={[s.subtext, { textAlign: 'center' }]}>
+            <Text style={{ color: light ? 'rgba(12,35,64,0.65)' : text2, fontSize: 15, textAlign: 'center' }}>
               {isRegister
                 ? 'Preencha os dados abaixo para se registar'
                 : 'Insira as suas credenciais para aceder à plataforma'}
@@ -223,7 +252,7 @@ export default function LoginScreen() {
             <View style={{ gap: 16 }}>
               {/* Email ou NIF */}
               <View>
-                <Text style={s.label}>Email ou NIF</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Email ou NIF</Text>
                 <View style={s.inputWrapper}>
                   <View style={s.inputIcon}>
                     <IconUser color={loginForm.formState.errors.identifier ? '#f87171' : '#8e9bab'} />
@@ -236,7 +265,7 @@ export default function LoginScreen() {
                       <TextInput
                         style={[getInputStyle('identifier'), s.inputWithIcon]}
                         placeholder="exemplo@email.com ou 123456789"
-                        placeholderTextColor="#586779"
+                        placeholderTextColor={text2}
                         value={value}
                         onChangeText={onChange}
                         onFocus={() => setFocusedInput('identifier')}
@@ -255,7 +284,7 @@ export default function LoginScreen() {
 
               {/* Senha */}
               <View>
-                <Text style={s.label}>Senha</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Senha</Text>
                 <View style={s.inputWrapper}>
                   <View style={s.inputIcon}>
                     <IconLock />
@@ -286,19 +315,19 @@ export default function LoginScreen() {
               <TouchableOpacity
                 onPress={handleLogin}
                 disabled={loading}
-                style={[s.btn, { marginTop: 4, opacity: loading ? 0.6 : 1 }]}
+                style={[s.btn, { marginTop: 4, opacity: loading ? 0.6 : 1, backgroundColor: light ? '#0C2340' : accent }]}
                 activeOpacity={0.9}
               >
                 {loading
-                  ? <ActivityIndicator color="#0C2340" />
-                  : <Text style={s.btnText}>Entrar</Text>
+                  ? <ActivityIndicator color={light ? '#31ECC6' : '#0C2340'} />
+                  : <Text style={{ color: light ? '#31ECC6' : '#0C2340', fontWeight: '700', fontSize: 15 }}>Entrar</Text>
                 }
               </TouchableOpacity>
             </View>
           ) : (
             <View style={{ gap: 14 }}>
               <View>
-                <Text style={s.label}>Nome Completo</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Nome Completo</Text>
                 <View style={s.inputWrapper}>
                   <View style={s.inputIcon}>
                     <IconUser />
@@ -326,7 +355,7 @@ export default function LoginScreen() {
               </View>
               <View style={{ flexDirection: 'row', gap: 10 }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={s.label}>NIF</Text>
+                  <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>NIF</Text>
                   <Controller
                     control={registerForm.control}
                     name="nif"
@@ -357,7 +386,7 @@ export default function LoginScreen() {
               </View>
 
               <View>
-                <Text style={s.label}>Tipo de conta</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Tipo de conta</Text>
                 <Controller
                   control={registerForm.control}
                   name="tipo_usuario"
@@ -374,12 +403,12 @@ export default function LoginScreen() {
                             borderRadius: 12,
                             alignItems: 'center',
                             borderWidth: 1.5,
-                            borderColor: value === tipo ? '#31ECC6' : '#304259',
-                            backgroundColor: value === tipo ? 'rgba(49,236,198,0.12)' : '#0c2340',
+                            borderColor: value === tipo ? (light ? '#0C2340' : accent) : (light ? 'rgba(12,35,64,0.25)' : inputBorder),
+                            backgroundColor: value === tipo ? (light ? '#0C2340' : accentBg) : (light ? 'rgba(255,255,255,0.40)' : inputBg),
                           }}
                         >
                           <Text style={{
-                            color: value === tipo ? '#31ECC6' : '#8e9bab',
+                            color: value === tipo ? (light ? '#31ECC6' : accent) : (light ? '#0C2340' : text2),
                             fontWeight: '700',
                             fontSize: 14,
                           }}>
@@ -393,7 +422,7 @@ export default function LoginScreen() {
               </View>
 
               <View>
-                <Text style={s.label}>Email</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Email</Text>
                 <View style={s.inputWrapper}>
                   <View style={s.inputIcon}>
                     <IconMail />
@@ -427,7 +456,7 @@ export default function LoginScreen() {
               </View>
 
               <View>
-                <Text style={s.label}>Senha</Text>
+                <Text style={{ color: light ? '#0C2340' : text2, fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>Senha</Text>
                 <View style={s.inputWrapper}>
                   <View style={s.inputIcon}>
                     <IconLock />
@@ -458,12 +487,12 @@ export default function LoginScreen() {
               <TouchableOpacity
                 onPress={handleRegister}
                 disabled={loading}
-                style={[s.btn, { marginTop: 4, opacity: loading ? 0.6 : 1 }]}
+                style={[s.btn, { marginTop: 4, opacity: loading ? 0.6 : 1, backgroundColor: light ? '#0C2340' : accent }]}
                 activeOpacity={0.9}
               >
                 {loading
-                  ? <ActivityIndicator color="#0C2340" />
-                  : <Text style={s.btnText}>Criar conta</Text>
+                  ? <ActivityIndicator color={light ? '#31ECC6' : '#0C2340'} />
+                  : <Text style={{ color: light ? '#31ECC6' : '#0C2340', fontWeight: '700', fontSize: 15 }}>Criar conta</Text>
                 }
               </TouchableOpacity>
             </View>
@@ -471,11 +500,11 @@ export default function LoginScreen() {
 
           {/* Toggle */}
           <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20, gap: 4 }}>
-            <Text style={{ color: '#8e9bab', fontSize: 14 }}>
+            <Text style={{ color: light ? 'rgba(12,35,64,0.65)' : text2, fontSize: 14 }}>
               {isRegister ? 'Já tem conta? ' : 'Não tem conta? '}
             </Text>
             <TouchableOpacity onPress={() => { setIsRegister(!isRegister); setServerError(''); loginForm.reset(); registerForm.reset(); }}>
-              <Text style={{ color: '#31ECC6', fontWeight: '600', fontSize: 14 }}>
+              <Text style={{ color: light ? '#0C2340' : accent, fontWeight: '800', fontSize: 14 }}>
                 {isRegister ? 'Entrar' : 'Registar'}
               </Text>
             </TouchableOpacity>
@@ -488,33 +517,6 @@ export default function LoginScreen() {
 }
 
 const s = StyleSheet.create({
-  heading: {
-    color: '#ffffff',
-    fontSize: 30,
-    fontWeight: '800',
-    letterSpacing: -0.5,
-    marginBottom: 6,
-  },
-  subheading: {
-    color: '#31ECC6',
-    fontSize: 13,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1.5,
-    marginBottom: 6,
-  },
-  subtext: {
-    color: '#8e9bab',
-    fontSize: 15,
-  },
-  label: {
-    color: '#8e9bab',
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 6,
-  },
   inputWrapper: {
     position: 'relative',
   },
@@ -526,30 +528,13 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
   },
-  input: {
-    backgroundColor: '#0c2340',
-    borderWidth: 1,
-    borderColor: '#304259',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
   inputWithIcon: {
     paddingLeft: 42,
   },
   btn: {
-    backgroundColor: '#31ECC6',
     borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
-  },
-  btnText: {
-    color: '#0C2340',
-    fontWeight: '700',
-    fontSize: 15,
   },
   err: {
     color: '#f87171',
