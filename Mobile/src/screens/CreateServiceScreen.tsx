@@ -24,7 +24,7 @@ type Form = z.infer<typeof schema>;
 export default function CreateServiceScreen() {
   const navigation   = useNavigation();
   const queryClient  = useQueryClient();
-  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText, btnPrimaryText } = useTheme();
+  const { pageBg, card, border, text1, text2, accent, inputBg, inputBorder, btnSecBg, btnSecText, btnPrimaryText, headerBg, light } = useTheme();
 
   const { control, handleSubmit, formState: { errors } } = useForm<Form>({
     resolver: zodResolver(schema) as any,
@@ -58,10 +58,10 @@ export default function CreateServiceScreen() {
       style={{ flex: 1, backgroundColor: pageBg }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <StatusBar barStyle="light-content" backgroundColor={pageBg} />
+      <StatusBar barStyle={light ? 'dark-content' : 'light-content'} backgroundColor={headerBg} />
 
       {/* Header */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, borderBottomWidth: 1, borderBottomColor: border }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 14, backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: border }}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 6 }}>
           <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
             <Path d="M15 18l-6-6 6-6" />
