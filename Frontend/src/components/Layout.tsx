@@ -22,27 +22,35 @@ interface NavItem {
   icon: ReactNode;
 }
 
-function NavLink({ item, isActive, accent, text2, sideHover }: {
+function NavLink({ item, isActive, accent, text2, sideHover, light }: {
   item: NavItem;
   isActive: boolean;
   accent: string;
   text2: string;
   sideHover: string;
+  light: boolean;
 }) {
   return (
     <Link
       to={item.to}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all group"
+      title={item.label}
+      className="relative flex items-center justify-center p-3 rounded-xl transition-all group"
       style={{
-        color: isActive ? accent : text2,
-        background: isActive ? `${accent}18` : 'transparent',
+        color: isActive ? '#ffffff' : text2,
+        background: isActive ? accent : 'transparent',
       }}
-      onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = sideHover; }}
-      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+      onMouseEnter={e => { 
+        if (!isActive) {
+          e.currentTarget.style.background = sideHover;
+        }
+      }}
+      onMouseLeave={e => { 
+        if (!isActive) {
+          e.currentTarget.style.background = 'transparent';
+        }
+      }}
     >
-      <span className="flex-shrink-0 w-5 h-5" style={{ color: isActive ? accent : text2 }}>{item.icon}</span>
-      <span className="truncate">{item.label}</span>
-      {isActive && <span className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: accent }} />}
+      <span className="flex-shrink-0 w-6 h-6">{item.icon}</span>
     </Link>
   );
 }
@@ -119,16 +127,14 @@ export default function Layout({ children }: LayoutProps) {
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full items-center">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-4 h-16 flex-shrink-0" style={{ borderBottom: `1px solid ${sideBorder}` }}>
+      <div className="flex items-center justify-center py-6 flex-shrink-0">
         <BulirLogo />
-        <span className="text-base font-bold" style={{ color: text1 }}>Bulir</span>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        <p className="text-[10px] font-semibold uppercase tracking-widest px-3 mb-2" style={{ color: text2 }}>Menu</p>
+      <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto w-full">
         {navItems.map(item => (
           <NavLink
             key={item.to}
@@ -137,61 +143,47 @@ export default function Layout({ children }: LayoutProps) {
             accent={accent}
             text2={text2}
             sideHover={sideHover}
+            light={light}
           />
         ))}
       </nav>
 
-      {/* User card */}
-      <div className="px-3 pb-4 flex-shrink-0" style={{ borderTop: `1px solid ${sideBorder}` }}>
-        <div className="mt-4 rounded-xl p-3" style={{ background: sideHover }}>
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-              style={{ background: accentBg, color: accent }}>
-              {initials}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold truncate" style={{ color: text1 }}>{user?.nome_completo ?? 'Utilizador'}</p>
-              <p className="text-[10px] truncate" style={{ color: text2 }}>{user?.email}</p>
-            </div>
-            <span className="flex-shrink-0 text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full"
-              style={{ background: accentBg, color: accent }}>
-              {user?.tipo_usuario}
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={toggleTheme}
-              title={light ? 'Modo escuro' : 'Modo claro'}
-              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-              style={{ background: `${accent}18`, color: accent }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            >
-              {light ? (
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              ) : (
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              )}
-              {light ? 'Escuro' : 'Claro'}
-            </button>
-            <button
-              onClick={handleLogout}
-              title="Sair"
-              className="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-all"
-              style={{ background: 'rgba(248,113,113,0.10)', color: '#f87171' }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.75')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-            >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      {/* Bottom section */}
+      <div className="px-3 pb-4 flex-shrink-0 w-full space-y-2" style={{ borderTop: `1px solid ${sideBorder}` }}>
+        {/* Theme toggle */}
+        <div className="pt-4 flex justify-center">
+          <button
+            onClick={toggleTheme}
+            title={light ? 'Modo escuro' : 'Modo claro'}
+            className="p-2.5 rounded-xl transition-all"
+            style={{ color: text2, background: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.background = sideHover)}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+            {light ? (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
-              Sair
-            </button>
-          </div>
+            ) : (
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Logout */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleLogout}
+            title="Sair"
+            className="p-2.5 rounded-xl transition-all"
+            style={{ color: '#f87171', background: 'transparent' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(248,113,113,0.1)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -202,7 +194,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* ── Desktop sidebar ─────────────────────────────────────────────── */}
       <aside
-        className="hidden md:flex flex-col w-60 flex-shrink-0 h-full overflow-hidden"
+        className="hidden md:flex flex-col w-20 flex-shrink-0 h-full overflow-hidden"
         style={{ background: sideBg, borderRight: `1px solid ${sideBorder}` }}
       >
         <SidebarContent />
@@ -213,7 +205,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
           <aside
-            className="absolute left-0 top-0 h-full w-64 flex flex-col z-50"
+            className="absolute left-0 top-0 h-full w-20 flex flex-col z-50"
             style={{ background: sideBg, borderRight: `1px solid ${sideBorder}` }}
           >
             <SidebarContent />
@@ -226,12 +218,12 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Topbar */}
         <header
-          className="flex items-center justify-between px-4 sm:px-6 h-16 flex-shrink-0"
+          className="flex items-center justify-between px-3 sm:px-4 md:px-6 h-14 sm:h-16 flex-shrink-0"
           style={{ background: topBg, borderBottom: `1px solid ${sideBorder}` }}
         >
           {/* Mobile: hamburger */}
           <button
-            className="md:hidden p-1.5 rounded-lg transition-colors"
+            className="md:hidden p-2 rounded-lg transition-colors"
             style={{ color: text2 }}
             onClick={() => setMobileOpen(true)}
           >
@@ -246,20 +238,24 @@ export default function Layout({ children }: LayoutProps) {
             <span className="text-sm font-bold" style={{ color: text1 }}>Bulir</span>
           </Link>
 
-          {/* Page breadcrumb (desktop) */}
-          <div className="hidden md:flex items-center gap-2">
-            <span className="text-sm font-semibold" style={{ color: text1 }}>
-              {navItems.find(n => isActive(n.to))?.label ?? 'Bulir'}
-            </span>
+          {/* Page title (desktop) */}
+          <div className="hidden md:block">
+            <h1 className="text-lg font-semibold" style={{ color: text1 }}>
+              {navItems.find(n => isActive(n.to))?.label ?? 'Dashboard'}
+            </h1>
           </div>
 
           {/* Right: saldo + avatar */}
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex flex-col items-end">
-              <p className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: text2 }}>Saldo</p>
-              <p className="text-sm font-bold" style={{ color: accent }}>Kz {(user?.saldo ?? 0).toFixed(2)}</p>
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+            <div className="hidden sm:flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg" style={{ background: accentBg }}>
+              <svg className="w-4 h-4" style={{ color: accent }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-xs sm:text-sm font-semibold" style={{ color: accent }}>
+                Kz {(user?.saldo ?? 0).toFixed(2)}
+              </span>
             </div>
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
               style={{ background: accentBg, color: accent }}>
               {initials}
             </div>

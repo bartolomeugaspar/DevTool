@@ -52,7 +52,7 @@ export default function CreateService() {
   const inputStyle = { background: inputBg, border: `1px solid ${inputBorder}`, color: text1 };
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <div className="w-full px-4 sm:px-6 py-8">
       <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Criar Serviço</h1>
 
       {serverError && (

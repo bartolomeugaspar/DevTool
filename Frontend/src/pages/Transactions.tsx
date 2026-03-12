@@ -92,9 +92,9 @@ export default function Transactions() {
         isPending={cancelMutation.isPending}
       />
     )}
-    <div className="w-full px-4 sm:px-6 py-8">
+    <div className="px-3 sm:px-4 md:px-6 py-6 sm:py-8">
       {/* Header */}
-      <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Histórico de Transações</h1>
+      <h1 className="text-xl sm:text-2xl font-bold mb-5 sm:mb-6 md:mb-8" style={{ color: text1 }}>Histórico de Transações</h1>
 
       {/* Summary cards */}
       {!isLoading && reservations.length > 0 && (

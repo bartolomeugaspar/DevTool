@@ -50,7 +50,7 @@ export default function HireService() {
 
   if (!service) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <div className="w-full px-4 sm:px-6 py-8">
         <p className="text-red-400">Serviço não encontrado.</p>
       </div>
     );
@@ -60,7 +60,7 @@ export default function HireService() {
 
   if (isOwnService) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8">
+      <div className="w-full px-4 sm:px-6 py-8">
         <div className="rounded-2xl p-6 text-center" style={{ background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.25)' }}>
           <svg className="w-10 h-10 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="#eab308" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
@@ -81,7 +81,7 @@ export default function HireService() {
 
   if (success) {
     return (
-      <div className="w-full max-w-lg mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <div className="w-full px-4 sm:px-6 py-8 sm:py-12">
         <div className="rounded-2xl p-6 sm:p-10 flex flex-col items-center text-center"
           style={{ background: card, border: `1px solid ${border}` }}>
 
@@ -150,7 +150,7 @@ export default function HireService() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <div className="w-full px-4 sm:px-6 py-8">
       <h1 className="text-2xl font-bold mb-6 sm:mb-8" style={{ color: text1 }}>Contratar Serviço</h1>
 
       <div className="rounded-2xl p-5 sm:p-8" style={{ background: card, border: `1px solid ${border}` }}>

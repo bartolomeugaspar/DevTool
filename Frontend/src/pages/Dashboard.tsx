@@ -5,51 +5,18 @@ import { useAuthStore } from '../store/authStore';
 import { useTheme } from '../hooks/useTheme';
 import { serviceService } from '../services/serviceService';
 import { transactionService } from '../services/transactionService';
-import { STATUS_STYLES, QUERY_KEYS, ROUTES } from '../lib/constants';
+import { QUERY_KEYS, ROUTES } from '../lib/constants';
 import TopUpModal from '../components/TopUpModal';
-import type { Reservation } from '../types';
 
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Bom dia';
-  if (h < 18) return 'Boa tarde';
-  return 'Boa noite';
-}
-
-function statusBadge(status: Reservation['status']) {
-  const s = STATUS_STYLES[status] ?? STATUS_STYLES.pendente;
-  return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0"
-      style={{ background: s.bg, color: s.color }}>
-      <span className="w-1.5 h-1.5 rounded-full bg-current" />
-      {s.label}
-    </span>
-  );
-}
-
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const m = Math.floor(diff / 60000);
-  if (m < 1) return 'agora';
-  if (m < 60) return `há ${m}m`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `há ${h}h`;
-  return `há ${Math.floor(h / 24)}d`;
-}
-
-// ── main ─────────────────────────────────────────────────────────────────────
+// ── Main ─────────────────────────────────────────────────────────────────────
 
 export default function Dashboard() {
   const { user } = useAuthStore();
-  const { light, card, border, text1, text2, skelBg, hover, accent, accentBg } = useTheme();
-
+  const { light, card, border, text1, text2, skelBg, hover, accent, accentBg, pageBg } = useTheme();
   const [showTopUp, setShowTopUp] = useState(false);
 
   const isPrestador = user?.tipo_usuario === 'prestador';
   const firstName = user?.nome_completo?.split(' ')[0] ?? 'utilizador';
-
 
   const { data: services = [], isLoading: loadingServices } = useQuery({
     queryKey: QUERY_KEYS.SERVICES,
@@ -61,254 +28,308 @@ export default function Dashboard() {
     queryFn: transactionService.getHistory,
   });
 
-  const recent = [...reservations]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 6);
-
-  const totalSpent = reservations
-    .filter(r => r.status === 'concluido')
-    .reduce((sum, r) => sum + (r.services?.preco ?? 0), 0);
-
   const concluded = reservations.filter(r => r.status === 'concluido').length;
-  const pending   = reservations.filter(r => r.status === 'pendente').length;
-
-  const Skel = ({ w = '6rem', h = '1.75rem' }: { w?: string; h?: string }) => (
-    <div className="rounded-lg animate-pulse" style={{ width: w, height: h, background: skelBg }} />
-  );
-
-  // ── stat items ────────────────────────────────────────────────────────────
-  const stats = [
-    {
-      label: 'Serviços',
-      value: loadingServices ? null : services.length,
-      sub: 'na plataforma',
-      accent: '#818cf8',
-      path: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />,
-    },
-    {
-      label: isPrestador ? 'Contratações' : 'Total gasto',
-      value: loadingReservations ? null : isPrestador ? reservations.length : `Kz ${totalSpent.toFixed(2)}`,
-      sub: isPrestador ? 'nas tuas ofertas' : 'em serviços',
-      accent: '#f472b6',
-      path: <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />,
-    },
-    {
-      label: 'Concluídos',
-      value: loadingReservations ? null : concluded,
-      sub: 'serviços',
-      accent: accent,
-      path: <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />,
-    },
-    {
-      label: 'Pendentes',
-      value: loadingReservations ? null : pending,
-      sub: 'a aguardar',
-      accent: '#eab308',
-      path: <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />,
-    },
-  ];
-
-  // ── quick actions ─────────────────────────────────────────────────────────
-  const actions = [
-    { to: ROUTES.SERVICES,        label: 'Explorar serviços', desc: 'Ver todos os serviços',  accent: accent,     path: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" /> },
-    { to: ROUTES.TRANSACTIONS,    label: 'Transações',        desc: 'Histórico de movimentos', accent: '#818cf8',  path: <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /> },
-    ...(isPrestador ? [{ to: ROUTES.SERVICE_CREATE, label: 'Criar serviço', desc: 'Publicar nova oferta', accent: '#f472b6', path: <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /> }] : []),
-  ];
+  const pending = reservations.filter(r => r.status === 'pendente').length;
+  const myServices = isPrestador ? services.filter(s => s.prestador_id === user?.id).length : services.length;
 
   return (
-    <div className="min-h-screen transition-colors duration-300">
-      <div className="w-full px-4 sm:px-6 py-8 space-y-8">
+    <div className="min-h-screen transition-colors duration-300" style={{ background: pageBg }}>
+      {showTopUp && <TopUpModal onClose={() => setShowTopUp(false)} />}
+      
+      <div className="px-3 sm:px-4 md:px-6 py-4 sm:py-6">
+        
+        {/* Header */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2" style={{ color: text1 }}>
+            Bem-vindo, {firstName}
+          </h1>
+          <p className="text-sm sm:text-base" style={{ color: text2 }}>
+            {isPrestador ? 'Gerencie seus serviços e acompanhe suas atividades' : 'Explore serviços e gerencie suas contratações'}
+          </p>
+        </div>
 
-        {showTopUp && <TopUpModal onClose={() => setShowTopUp(false)} />}
-
-        {/* ── Hero header ─────────────────────────────────────────────────── */}
-        <div className="rounded-2xl px-4 sm:px-6 py-5 sm:py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5"
-          style={{ background: card, border: `1px solid ${border}` }}>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold flex-shrink-0"
-              style={{ background: `${accentBg}`, color: accent }}>
-              {user?.nome_completo?.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase() ?? '?'}
+        {/* Stats Overview */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
+          {/* Serviços */}
+          <div className="rounded-2xl p-5 sm:p-6" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{ background: `${accent}15` }}>
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: accent }}>
-                {greeting()}
-              </p>
-              <h1 className="text-xl font-bold mt-0.5" style={{ color: text1 }}>
-                {firstName}
-              </h1>
-              <p className="text-xs mt-0.5" style={{ color: text2 }}>{user?.email}</p>
+            <div className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: text1 }}>
+              {loadingServices ? '...' : myServices}
+            </div>
+            <div className="text-xs sm:text-sm font-medium" style={{ color: text2 }}>
+              Serviços {isPrestador ? 'publicados' : 'disponíveis'}
             </div>
           </div>
 
-          <div className="flex flex-col items-start sm:items-end gap-1">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: text2 }}>Saldo disponível</p>
-            <p className="text-3xl font-extrabold tracking-tight" style={{ color: accent }}>
+          {/* Reservas */}
+          <div className="rounded-2xl p-5 sm:p-6" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{ background: '#FF6B9D15' }}>
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="#FF6B9D" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+            </div>
+            <div className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: text1 }}>
+              {loadingReservations ? '...' : reservations.length}
+            </div>
+            <div className="text-xs sm:text-sm font-medium" style={{ color: text2 }}>
+              {isPrestador ? 'Contratações' : 'Reservas'}
+            </div>
+          </div>
+
+          {/* Saldo */}
+          <div className="rounded-2xl p-5 sm:p-6" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{ background: '#06D6A015' }}>
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="#06D6A0" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div className="text-2xl sm:text-3xl font-bold mb-1" style={{ color: text1 }}>
               Kz {(user?.saldo ?? 0).toFixed(2)}
-            </p>
-            <div className="flex items-center gap-2">
-              <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide"
-                style={{ background: accentBg, color: accent, border: `1px solid ${accent}33` }}>
-                {user?.tipo_usuario}
-              </span>
-              {!isPrestador && (
-                <button
-                  onClick={() => setShowTopUp(true)}
-                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all hover:opacity-80"
-                  style={{ background: accent, color: '#fff' }}
-                >
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            </div>
+            <div className="text-xs sm:text-sm font-medium" style={{ color: text2 }}>
+              Saldo disponível
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="rounded-2xl p-5 sm:p-6" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center" style={{ background: '#FFA50015' }}>
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="#FFA500" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div className="text-3xl sm:text-4xl font-bold mb-1" style={{ color: text1 }}>
+              {loadingReservations ? '...' : concluded}
+            </div>
+            <div className="text-xs sm:text-sm font-medium" style={{ color: text2 }}>
+              Concluídos
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
+          <Link
+            to={ROUTES.SERVICES}
+            className="rounded-2xl p-6 transition-all hover:scale-[1.02] group"
+            style={{ background: `${accent}10`, border: `1px solid ${accent}30` }}
+          >
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: accent }}>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-base sm:text-lg font-bold mb-0.5" style={{ color: text1 }}>Explorar</p>
+                <p className="text-xs sm:text-sm" style={{ color: text2 }}>Ver todos os serviços</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: accent }}>
+              <span>Ver serviços</span>
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
+
+          <Link
+            to={ROUTES.TRANSACTIONS}
+            className="rounded-2xl p-6 transition-all hover:scale-[1.02] group"
+            style={{ background: '#FF6B9D10', border: '1px solid #FF6B9D30' }}
+          >
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: '#FF6B9D' }}>
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-base sm:text-lg font-bold mb-0.5" style={{ color: text1 }}>Transações</p>
+                <p className="text-xs sm:text-sm" style={{ color: text2 }}>Histórico completo</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#FF6B9D' }}>
+              <span>Ver histórico</span>
+              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </Link>
+
+          {!isPrestador && (
+            <button
+              onClick={() => setShowTopUp(true)}
+              className="rounded-2xl p-6 transition-all hover:scale-[1.02] text-left group"
+              style={{ background: '#FFA50010', border: '1px solid #FFA50030' }}
+            >
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: '#FFA500' }}>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
-                  Carregar
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* ── Stat row ────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {stats.map(({ label, value, sub, accent, path }) => (
-            <div key={label} className="rounded-2xl p-5 flex flex-col gap-3"
-              style={{ background: card, border: `1px solid ${border}` }}>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: text2 }}>{label}</span>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${accent}18` }}>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={1.8}>{path}</svg>
+                </div>
+                <div className="flex-1">
+                  <p className="text-base sm:text-lg font-bold mb-0.5" style={{ color: text1 }}>Adicionar Saldo</p>
+                  <p className="text-xs sm:text-sm" style={{ color: text2 }}>Recarregue sua conta</p>
                 </div>
               </div>
-              {value === null
-                ? <Skel w="4rem" h="2rem" />
-                : <p className="text-xl sm:text-2xl font-extrabold tracking-tight break-all" style={{ color: text1 }}>{value}</p>}
-              <p className="text-xs" style={{ color: text2 }}>{sub}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* ── Main content ─────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Activity feed */}
-          <div className="lg:col-span-2 rounded-2xl overflow-hidden"
-            style={{ background: card, border: `1px solid ${border}` }}>
-            <div className="flex items-center justify-between px-5 py-4"
-              style={{ borderBottom: `1px solid ${border}` }}>
-              <h2 className="text-sm font-semibold" style={{ color: text1 }}>Actividade recente</h2>
-              <Link to={ROUTES.TRANSACTIONS} className="text-xs font-medium transition-opacity hover:opacity-70"
-                style={{ color: accent }}>
-                Ver tudo →
-              </Link>
-            </div>
-
-            {loadingReservations ? (
-              <div className="p-5 space-y-4">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl flex-shrink-0 animate-pulse" style={{ background: skelBg }} />
-                    <div className="flex-1 space-y-2">
-                      <Skel w="9rem" h="1rem" />
-                      <Skel w="5rem" h="0.75rem" />
-                    </div>
-                    <Skel w="5rem" h="1.5rem" />
-                  </div>
-                ))}
-              </div>
-            ) : recent.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                  style={{ background: accentBg }}>
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                </div>
-                <p className="text-sm" style={{ color: text2 }}>Sem actividade ainda</p>
-                <Link to={ROUTES.SERVICES} className="text-xs font-medium hover:opacity-70 transition-opacity" style={{ color: accent }}>
-                  Explorar serviços →
-                </Link>
-              </div>
-            ) : (
-              <div>
-                {recent.map((r, idx) => (
-                  <div key={r.id}
-                    className="flex items-center gap-3 px-5 py-3.5 transition-colors cursor-default"
-                    style={{ borderBottom: idx < recent.length - 1 ? `1px solid ${border}` : 'none' }}
-                    onMouseEnter={e => (e.currentTarget.style.background = hover)}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: accentBg }}>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={1.8}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate" style={{ color: text1 }}>
-                        {r.services?.nome ?? 'Serviço removido'}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: text2 }}>
-                        {r.services ? `Kz ${r.services.preco.toFixed(2)}` : '—'} · {timeAgo(r.created_at)}
-                      </p>
-                    </div>
-                    {statusBadge(r.status)}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-4">
-            <h2 className="text-xs font-semibold uppercase tracking-widest px-1" style={{ color: text2 }}>
-              Acções rápidas
-            </h2>
-
-            {actions.map(({ to, label, desc, accent, path }) => (
-              <Link key={to} to={to}
-                className="group flex items-center gap-3 rounded-2xl p-4 transition-all"
-                style={{ background: card, border: `1px solid ${border}` }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = accent + '66'; e.currentTarget.style.background = hover; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = border; e.currentTarget.style.background = card; }}
-              >
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style={{ background: `${accent}18` }}>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={1.8}>{path}</svg>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold" style={{ color: text1 }}>{label}</p>
-                  <p className="text-xs mt-0.5" style={{ color: text2 }}>{desc}</p>
-                </div>
-                <svg className="w-4 h-4 flex-shrink-0 opacity-30 group-hover:opacity-60 transition-opacity"
-                  fill="none" viewBox="0 0 24 24" stroke={text2} strokeWidth={2}>
+              <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#FFA500' }}>
+                <span>Adicionar agora</span>
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
-              </Link>
-            ))}
+              </div>
+            </button>
+          )}
 
-            {/* Account info */}
-            <div className="rounded-2xl p-4" style={{ background: card, border: `1px solid ${border}` }}>
-              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: text2 }}>Conta</p>
-              <div className="space-y-2.5">
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ color: text2 }}>Nome</span>
-                  <span className="font-medium truncate max-w-[130px]" style={{ color: text1 }}>{user?.nome_completo}</span>
+          {isPrestador && (
+            <Link
+              to={ROUTES.SERVICE_CREATE}
+              className="rounded-2xl p-6 transition-all hover:scale-[1.02] group"
+              style={{ background: '#06D6A010', border: '1px solid #06D6A030' }}
+            >
+              <div className="flex items-center gap-4 mb-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: '#06D6A0' }}>
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                  </svg>
                 </div>
-                <div className="h-px" style={{ background: border }} />
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ color: text2 }}>NIF</span>
-                  <span className="font-medium font-mono" style={{ color: text1 }}>{user?.nif ?? '—'}</span>
-                </div>
-                <div className="h-px" style={{ background: border }} />
-                <div className="flex justify-between items-center text-sm">
-                  <span style={{ color: text2 }}>Perfil</span>
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold uppercase"
-                    style={{ background: accentBg, color: accent }}>
-                    {user?.tipo_usuario}
-                  </span>
+                <div className="flex-1">
+                  <p className="text-base sm:text-lg font-bold mb-0.5" style={{ color: text1 }}>Criar Serviço</p>
+                  <p className="text-xs sm:text-sm" style={{ color: text2 }}>Publique um novo serviço</p>
                 </div>
               </div>
+              <div className="flex items-center gap-1 text-xs font-semibold" style={{ color: '#06D6A0' }}>
+                <span>Criar agora</span>
+                <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </Link>
+          )}
+        </div>
+
+        {/* Recent Activity */}
+        {!loadingReservations && reservations.length > 0 && (
+          <div className="rounded-2xl p-5 sm:p-6" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h2 className="text-lg sm:text-xl font-bold mb-1" style={{ color: text1 }}>
+                  Atividade Recente
+                </h2>
+                <p className="text-xs sm:text-sm" style={{ color: text2 }}>
+                  {isPrestador ? 'Últimas contratações dos seus serviços' : 'Seus últimos serviços contratados'}
+                </p>
+              </div>
+              <Link
+                to={ROUTES.TRANSACTIONS}
+                className="text-xs sm:text-sm font-semibold px-4 py-2 rounded-lg transition-all hover:opacity-80"
+                style={{ background: accentBg, color: accent }}
+              >
+                Ver tudo
+              </Link>
+            </div>
+            
+            <div className="space-y-3">
+              {reservations.slice(0, 5).map((reservation) => (
+                <div
+                  key={reservation.id}
+                  className="flex items-center gap-4 p-4 rounded-xl transition-all hover:scale-[1.01]"
+                  style={{ background: light ? '#f9fafb' : 'rgba(255,255,255,0.02)', border: `1px solid ${border}` }}
+                >
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ 
+                      background: reservation.status === 'concluido' ? '#06D6A015' : 
+                                 reservation.status === 'pendente' ? '#FFA50015' : '#f8717115',
+                    }}>
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" 
+                      stroke={reservation.status === 'concluido' ? '#06D6A0' : 
+                             reservation.status === 'pendente' ? '#FFA500' : '#f87171'} 
+                      strokeWidth={2}>
+                      {reservation.status === 'concluido' ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      ) : reservation.status === 'pendente' ? (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      ) : (
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      )}
+                    </svg>
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm sm:text-base font-semibold mb-0.5 truncate" style={{ color: text1 }}>
+                      {reservation.services?.nome ?? 'Serviço'}
+                    </p>
+                    <p className="text-xs truncate" style={{ color: text2 }}>
+                      {new Date(reservation.created_at).toLocaleDateString('pt-PT', { 
+                        day: 'numeric', 
+                        month: 'short', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-sm sm:text-base font-bold mb-0.5" style={{ color: text1 }}>
+                      Kz {(reservation.services?.preco ?? 0).toFixed(2)}
+                    </p>
+                    <span 
+                      className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold px-2 py-1 rounded-full"
+                      style={{ 
+                        background: reservation.status === 'concluido' ? '#06D6A015' : 
+                                   reservation.status === 'pendente' ? '#FFA50015' : '#f8717115',
+                        color: reservation.status === 'concluido' ? '#06D6A0' : 
+                               reservation.status === 'pendente' ? '#FFA500' : '#f87171'
+                      }}>
+                      {reservation.status === 'concluido' ? 'Concluído' : 
+                       reservation.status === 'pendente' ? 'Pendente' : 'Cancelado'}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Empty State */}
+        {!loadingReservations && reservations.length === 0 && (
+          <div className="rounded-2xl p-8 sm:p-12 text-center" style={{ background: card, border: `1px solid ${border}` }}>
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center" style={{ background: `${accent}10` }}>
+              <svg className="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke={accent} strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold mb-2" style={{ color: text1 }}>
+              Nenhuma atividade ainda
+            </h3>
+            <p className="text-sm mb-6" style={{ color: text2 }}>
+              {isPrestador ? 'Comece criando seu primeiro serviço' : 'Explore os serviços disponíveis e faça sua primeira contratação'}
+            </p>
+            <Link
+              to={isPrestador ? ROUTES.SERVICE_CREATE : ROUTES.SERVICES}
+              className="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all text-white"
+              style={{ background: accent }}
+            >
+              {isPrestador ? 'Criar Serviço' : 'Explorar Serviços'}
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
