@@ -2,7 +2,7 @@
 
 # DevTool
 
-**Plataforma completa de marketplace de serviços com sistema de reservas e carteira digital**
+**Plataforma completa de contratação de prestadores de serviços**
 
 Ecossistema fullstack com Backend REST API, Frontend Web e Aplicação Mobile nativa, conectados a uma base de dados Supabase.
 
@@ -34,7 +34,7 @@ Ecossistema fullstack com Backend REST API, Frontend Web e Aplicação Mobile na
 
 ## Sobre o Projeto
 
-O **DevTool** é uma plataforma de marketplace que conecta **prestadores de serviços** a **clientes**, permitindo:
+O **DevTool** é uma plataforma conecta **prestadores de serviços** a **clientes**, permitindo:
 
 - **Prestadores**: Criar e gerir serviços, receber pagamentos na carteira digital
 - **Clientes**: Contratar serviços, gerir reservas e carteira com sistema de top-up
@@ -249,8 +249,8 @@ DevTool/
 ## Deploy
 
 ### Backend
-- **Plataforma**: Render.com
-- **URL**: https://devtool-n0gw.onrender.com
+- **Plataforma**: vercel.com
+- **URL**: https://dev-tool-backend-olive.vercel.app/api
 - **Configuração**:
   - Build Command: `npm install`
   - Start Command: `npm start`
